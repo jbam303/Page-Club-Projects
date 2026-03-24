@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 function LayoutFooter() {
   return (
     <footer className="w-full border-t border-[#3B4A3F]/15 bg-[#0E0E0E] py-12">
@@ -32,15 +34,15 @@ function LayoutFooter() {
           <h4 className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#00FF9D]">
             Administracion
           </h4>
-          <a
+          <Link
             className="inline-flex items-center gap-2 border border-[#00FF9D]/20 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-[#00FF9D] opacity-80 transition-all hover:bg-[#00FF9D]/5 hover:opacity-100"
-            href="#"
+            to="/admin/login"
           >
             <span className="material-symbols-outlined text-xs">
               admin_panel_settings
             </span>
             Admin Access
-          </a>
+          </Link>
         </div>
       </div>
     </footer>
