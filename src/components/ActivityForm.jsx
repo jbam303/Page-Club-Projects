@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 export default function ActivityForm({ initialData = null, onClose }) {
-  const [title, setTitle] = useState(initialData?.title || '')
-  const [description, setDescription] = useState(initialData?.description || '')
-  const [status, setStatus] = useState(initialData?.status || 'Pendiente')
+  const [title, setTitle] = useState(initialData?.titulo || '')
+  const [description, setDescription] = useState(initialData?.descripcion || '')
+  const [status, setStatus] = useState(initialData?.estado || 'Pendiente')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -15,7 +15,7 @@ export default function ActivityForm({ initialData = null, onClose }) {
     setLoading(true)
     setError(null)
 
-    const payload = { title, description, status }
+    const payload = { titulo: title, descripcion: description, estado: status }
 
     let resultError;
 

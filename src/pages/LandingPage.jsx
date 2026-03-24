@@ -1,8 +1,22 @@
 import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { supabase } from '../lib/supabase'
 import LayoutHeader from '../components/LayoutHeader'
 import LayoutFooter from '../components/LayoutFooter'
 
 function LandingPage() {
+  const [activities, setActivities] = useState([])
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      const { data } = await supabase
+        .from('activities')
+        .select('*')
+        .order('id', { ascending: true })
+      if (data) setActivities(data)
+    }
+    fetchActivities()
+  }, [])
   return (
     <div className="scrollbar-codeclub bg-surface text-on-surface font-body">
       <LayoutHeader />
@@ -197,73 +211,42 @@ function LandingPage() {
                 </span>
               </div>
               <div className="space-y-8 p-8">
-                <div className="flex items-start gap-6">
-                  <div className="flex flex-col items-center">
-                    <span
-                      className="material-symbols-outlined rounded bg-primary-container/10 p-2 text-primary-container"
-                      style={{ fontVariationSettings: "'FILL' 1" }}
-                    >
-                      check_circle
-                    </span>
-                    <div className="my-2 h-12 w-px bg-primary-container/20" />
-                  </div>
-                  <div>
-                    <h4 className="mb-1 font-bold text-on-surface">
-                      Presentación del taller
-                    </h4>
-                    <p className="text-sm font-light text-on-surface-variant">
-                      Introducción a la metodología y objetivos del club.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-6">
-                  <div className="flex flex-col items-center">
-                    <span
-                      className="material-symbols-outlined rounded bg-primary-container/10 p-2 text-primary-container"
-                      style={{ fontVariationSettings: "'FILL' 1" }}
-                    >
-                      check_circle
-                    </span>
-                    <div className="my-2 h-12 w-px bg-primary-container/20" />
-                  </div>
-                  <div>
-                    <h4 className="mb-1 font-bold text-on-surface">Semana 1: Kickoff</h4>
-                    <p className="text-sm font-light text-on-surface-variant">
-                      Formación de equipos y definición de stack tecnológico.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-6">
-                  <div className="flex flex-col items-center">
-                    <span className="material-symbols-outlined rounded border border-outline-variant/20 p-2 text-on-surface-variant/20">
-                      radio_button_unchecked
-                    </span>
-                    <div className="my-2 h-12 w-px bg-outline-variant/10" />
-                  </div>
-                  <div>
-                    <h4 className="mb-1 font-bold text-on-surface opacity-60">
-                      Semana 2: Code Katas
-                    </h4>
-                    <p className="text-sm font-light text-on-surface-variant opacity-60">
-                      Ejercicios de lógica y algoritmia para calentar motores.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-6">
-                  <div className="flex flex-col items-center">
-                    <span className="material-symbols-outlined rounded border border-outline-variant/20 p-2 text-on-surface-variant/20">
-                      more_horiz
-                    </span>
-                  </div>
-                  <div>
-                    <h4 className="mb-1 font-bold text-on-surface opacity-60">
-                      Semana 3+: Desarrollo de Proyectos
-                    </h4>
-                    <p className="text-sm font-light text-on-surface-variant opacity-60">
-                      Fase intensiva de construcción y mentoría.
-                    </p>
-                  </div>
-                </div>
+                {activities.length > 0 ? (
+                  activities.map((act, index) => {
+                    const isCompleted = act.estado === 'Completado'
+                    const isLast = index === activities.length - 1
+                    
+                    return (
+                      <div key={act.id} className="flex items-start gap-6">
+                        <div className="flex flex-col items-center">
+                          <span
+                            className={`material-symbols-outlined rounded ${
+                              isCompleted 
+                                ? "bg-primary-container/10 p-2 text-primary-container" 
+                                : "border border-outline-variant/20 p-2 text-on-surface-variant/20"
+                            }`}
+                            style={isCompleted ? { fontVariationSettings: "'FILL' 1" } : {}}
+                          >
+                            {isCompleted ? 'check_circle' : (act.estado === 'En progreso' ? 'more_horiz' : 'radio_button_unchecked')}
+                          </span>
+                          {!isLast && (
+                            <div className={`my-2 h-12 w-px ${isCompleted ? 'bg-primary-container/20' : 'bg-outline-variant/10'}`} />
+                          )}
+                        </div>
+                        <div>
+                          <h4 className={`mb-1 font-bold text-on-surface ${isCompleted ? 'line-through opacity-60' : ''}`}>
+                            {act.titulo}
+                          </h4>
+                          <p className={`text-sm font-light text-on-surface-variant ${isCompleted ? 'line-through opacity-60' : ''}`}>
+                            {act.descripcion}
+                          </p>
+                        </div>
+                      </div>
+                    )
+                  })
+                ) : (
+                  <p className="text-center font-mono text-sm text-on-surface-variant">Esperando nuevos logs del sistema...</p>
+                )}
               </div>
             </div>
           </div>

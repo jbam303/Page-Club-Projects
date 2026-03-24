@@ -42,6 +42,16 @@ export default function ActivityList() {
     }
   }
 
+  const handleToggleStatus = async (act) => {
+    const newStatus = act.estado === 'Completado' ? 'Pendiente' : 'Completado'
+    const { error } = await supabase.from('activities').update({ estado: newStatus }).eq('id', act.id)
+    if (error) {
+      alert('Error al actualizar estado: ' + error.message)
+    } else {
+      fetchActivities()
+    }
+  }
+
   const handleEdit = (activity) => {
     setEditingActivity(activity)
     setIsModalOpen(true)
@@ -106,15 +116,22 @@ export default function ActivityList() {
             </thead>
             <tbody>
               {activities.map((act) => (
-                <tr key={act.id} className="border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
-                  <td className="px-4 py-4 font-bold">{act.title}</td>
-                  <td className="px-4 py-4 font-light text-on-surface-variant">{act.description}</td>
+                <tr key={act.id} className="border-b border-outline-variant/10 transition-colors hover:bg-surface-container-low">
+                  <td className={`px-4 py-4 font-bold ${act.estado === 'Completado' ? 'line-through opacity-50' : ''}`}>{act.titulo}</td>
+                  <td className={`px-4 py-4 font-light text-on-surface-variant ${act.estado === 'Completado' ? 'line-through opacity-50' : ''}`}>{act.descripcion}</td>
                   <td className="px-4 py-4">
-                    <span className="rounded bg-primary-container/10 px-2 py-1 font-mono text-[10px] text-primary-container">
-                      {act.status || 'Activo'}
+                    <span className={`rounded px-2 py-1 font-mono text-[10px] ${act.estado === 'Completado' ? 'bg-[#00FF9D]/10 text-[#00FF9D]' : 'bg-primary-container/10 text-primary-container'}`}>
+                      {act.estado || 'Pendiente'}
                     </span>
                   </td>
                   <td className="px-4 py-4 text-right">
+                    <button
+                      onClick={() => handleToggleStatus(act)}
+                      className="mr-3 text-[#00FF9D] hover:text-[#00cc7d]"
+                      title="Marcar completada"
+                    >
+                      {act.estado === 'Completado' ? 'Desmarcar' : 'Completar'}
+                    </button>
                     <button
                       onClick={() => handleEdit(act)}
                       className="mr-3 text-primary-container hover:text-primary-fixed"
