@@ -16,7 +16,7 @@ export default function ActivityList() {
     const { data, error } = await supabase
       .from('activities')
       .select('*')
-      .order('created_at', { ascending: false })
+      .order('id', { ascending: false })
       
     if (error) {
       setError('Error al cargar actividades.')
