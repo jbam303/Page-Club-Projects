@@ -5,6 +5,7 @@ export default function ActivityForm({ initialData = null, onClose }) {
   const [title, setTitle] = useState(initialData?.titulo || '')
   const [description, setDescription] = useState(initialData?.descripcion || '')
   const [status, setStatus] = useState(initialData?.estado || 'Pendiente')
+  const [date, setDate] = useState(initialData?.fecha_evento ? new Date(initialData.fecha_evento).toISOString().slice(0, 16) : '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -15,7 +16,12 @@ export default function ActivityForm({ initialData = null, onClose }) {
     setLoading(true)
     setError(null)
 
-    const payload = { titulo: title, descripcion: description, estado: status }
+    const payload = { 
+      titulo: title, 
+      descripcion: description, 
+      estado: status,
+      fecha_evento: date ? new Date(date).toISOString() : null
+    }
 
     let resultError;
 
@@ -104,6 +110,18 @@ export default function ActivityForm({ initialData = null, onClose }) {
               <option value="En progreso">En progreso</option>
               <option value="Pendiente">Pendiente</option>
             </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-xs uppercase tracking-wider text-on-surface-variant">
+              Fecha del Evento
+            </label>
+            <input
+              type="datetime-local"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="terminal-glow w-full rounded border border-outline-variant/30 bg-surface px-3 py-2 text-on-surface transition-all focus:outline-none [color-scheme:dark]"
+            />
           </div>
 
           <div className="flex justify-end gap-3 pt-4">

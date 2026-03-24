@@ -234,6 +234,9 @@ function LandingPage() {
                           )}
                         </div>
                         <div>
+                          <div className={`mb-1 font-mono text-[10px] uppercase tracking-widest text-primary-container/70 ${isCompleted ? 'opacity-40' : ''}`}>
+                            {act.fecha_evento ? new Date(act.fecha_evento).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Próximamente...'}
+                          </div>
                           <h4 className={`mb-1 font-bold text-on-surface ${isCompleted ? 'line-through opacity-60' : ''}`}>
                             {act.titulo}
                           </h4>
