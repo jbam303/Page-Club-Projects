@@ -4,6 +4,7 @@ import LayoutHeader from '../components/LayoutHeader'
 import LayoutFooter from '../components/LayoutFooter'
 import ActivityList from '../components/ActivityList'
 import ProjectUpload from '../components/ProjectUpload'
+import MemberList from '../components/MemberList'
 
 export default function AdminDashboard() {
   const navigate = useNavigate()
@@ -36,8 +37,17 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          <ActivityList />
-          <ProjectUpload />
+          <div className="mb-12">
+            <MemberList />
+          </div>
+          
+          <div className="mb-12">
+            <ActivityList />
+          </div>
+
+          <div className="mb-12">
+            <ProjectUpload />
+          </div>
 
         </section>
       </main>
