@@ -130,7 +130,7 @@ function LandingPage() {
           <div className="mb-24 flex flex-col items-end justify-between gap-8 md:flex-row">
             <div>
               <span className="font-label text-xs uppercase tracking-[0.4em] text-primary-container">
-                Roadmap 2024
+                Roadmap 2026
               </span>
               <h2 className="mt-4 font-headline text-5xl font-bold md:text-7xl">
                 Nuestras Metas

@@ -24,3 +24,15 @@ dist-ssr
 *.sw?
 
 .agents/
+
+# Entorno y variables sensibles
+.env
+.env.*
+!.env.example
+
+# Entornos virtuales Python
+venv_db/
+venv/
+env/
+__pycache__/
+*.pyc
