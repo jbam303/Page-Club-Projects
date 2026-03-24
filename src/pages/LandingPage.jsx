@@ -22,19 +22,19 @@ function LandingPage() {
               System.Initialize(Community)
             </p>
             <h1 className="mb-8 font-headline text-5xl font-bold leading-tight tracking-tighter md:text-8xl">
-              Donde el codigo <br />
+              Donde el código <br />
               <span className="italic text-primary-fixed">cobra vida</span>
             </h1>
             <p className="mx-auto mb-12 max-w-2xl text-lg font-light text-on-surface-variant md:text-xl">
-              Aprende, colabora y crea proyectos reales. El club de programacion
-              mas activo para mentes que no se detienen.
+              Aprende, colabora y crea proyectos reales. El club de programación
+              más activo para mentes que no se detienen.
             </p>
             <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
               <Link
                 className="w-full rounded-md bg-gradient-to-r from-primary-fixed to-secondary-fixed-dim px-10 py-4 text-xs font-bold uppercase tracking-widest text-on-primary-fixed shadow-[0_0_30px_rgba(0,255,157,0.2)] transition-all hover:shadow-[0_0_40px_rgba(0,255,157,0.4)] sm:w-auto"
                 to="/registrocode"
               >
-                Unete al Club
+                Únete al Club
               </Link>
               <button className="w-full rounded-md border border-outline-variant/30 px-10 py-4 text-xs font-bold uppercase tracking-widest text-primary-fixed-dim transition-all hover:bg-primary-container/5 sm:w-auto">
                 Ver Proyectos
@@ -53,7 +53,7 @@ function LandingPage() {
             </div>
             <div className="h-8 w-px bg-outline-variant/20" />
             <div className="font-mono text-xs text-primary-fixed">
-              Lunes, Miercoles y Jueves: 11AM - 6PM
+              Lunes, Miércoles y Jueves: 11AM - 6PM
             </div>
           </div>
         </section>
@@ -63,12 +63,12 @@ function LandingPage() {
             <div className="md:col-span-5">
               <h2 className="mb-12 font-headline text-4xl font-bold leading-none md:text-6xl">
                 Nuestra <br />
-                <span className="text-primary-container">Mision</span>
+                <span className="text-primary-container">Misión</span>
               </h2>
               <p className="mb-8 text-xl font-light leading-relaxed text-on-surface-variant">
                 Fomentar una comunidad activa e inclusiva donde el intercambio
                 de conocimiento sea el motor principal. Rompemos las barreras de
-                entrada al mundo tecnologico.
+                entrada al mundo tecnológico.
               </p>
             </div>
             <div className="flex justify-center py-12 md:col-span-2 md:py-0">
@@ -76,13 +76,13 @@ function LandingPage() {
             </div>
             <div className="md:col-span-5 md:pt-32">
               <h2 className="mb-12 text-right font-headline text-4xl font-bold leading-none md:text-left md:text-6xl">
-                <span className="text-primary-container">Vision</span> <br />
+                <span className="text-primary-container">Visión</span> <br />
                 Futura
               </h2>
               <p className="text-right text-xl font-light leading-relaxed text-on-surface-variant md:text-left">
-                Convertirnos en un referente de innovacion tecnologica a nivel
-                regional, incubando talento que transforme la industria a traves
-                de la colaboracion abierta.
+                Convertirnos en un referente de innovación tecnológica a nivel
+                regional, incubando talento que transforme la industria a través
+                de la colaboración abierta.
               </p>
             </div>
           </div>
@@ -92,7 +92,7 @@ function LandingPage() {
           <div className="mx-auto max-w-7xl px-6">
             <div className="mb-16">
               <span className="font-label text-xs uppercase tracking-[0.4em] text-primary-container">
-                Declaracion de principios
+                Declaración de principios
               </span>
               <h2 className="mt-4 font-headline text-4xl font-bold">
                 Lo que NO somos
@@ -108,7 +108,7 @@ function LandingPage() {
                 </h3>
                 <p className="leading-relaxed text-on-surface-variant">
                   Aunque disfrutamos lo que hacemos, nos enfocamos en el
-                  crecimiento profesional y tecnico. Aqui venimos a construir el
+                  crecimiento profesional y técnico. Aquí venimos a construir el
                   futuro, un commit a la vez.
                 </p>
               </div>
@@ -121,8 +121,8 @@ function LandingPage() {
                 </h3>
                 <p className="leading-relaxed text-on-surface-variant">
                   El error es nuestro mejor compilador. Valoramos el aprendizaje
-                  que nace del fallo y la iteracion constante sobre la
-                  perfeccion estatica.
+                  que nace del fallo y la iteración constante sobre la
+                  perfección estática.
                 </p>
               </div>
             </div>
@@ -160,7 +160,7 @@ function LandingPage() {
                 02 / SOCIAL
               </span>
               <h3 className="font-headline text-3xl transition-transform group-hover:translate-x-4 md:text-5xl">
-                Vinculacion con el Medio
+                Vinculación con el Medio
               </h3>
               <span className="material-symbols-outlined opacity-0 transition-opacity text-primary-container group-hover:opacity-100">
 
@@ -212,10 +212,10 @@ function LandingPage() {
                   </div>
                   <div>
                     <h4 className="mb-1 font-bold text-on-surface">
-                      Presentacion del taller
+                      Presentación del taller
                     </h4>
                     <p className="text-sm font-light text-on-surface-variant">
-                      Introduccion a la metodologia y objetivos del club.
+                      Introducción a la metodología y objetivos del club.
                     </p>
                   </div>
                 </div>
@@ -232,7 +232,7 @@ function LandingPage() {
                   <div>
                     <h4 className="mb-1 font-bold text-on-surface">Semana 1: Kickoff</h4>
                     <p className="text-sm font-light text-on-surface-variant">
-                      Formacion de equipos y definicion de stack tecnologico.
+                      Formación de equipos y definición de stack tecnológico.
                     </p>
                   </div>
                 </div>
@@ -248,7 +248,7 @@ function LandingPage() {
                       Semana 2: Code Katas
                     </h4>
                     <p className="text-sm font-light text-on-surface-variant opacity-60">
-                      Ejercicios de logica y algoritmia para calentar motores.
+                      Ejercicios de lógica y algoritmia para calentar motores.
                     </p>
                   </div>
                 </div>
@@ -263,7 +263,7 @@ function LandingPage() {
                       Semana 3+: Desarrollo de Proyectos
                     </h4>
                     <p className="text-sm font-light text-on-surface-variant opacity-60">
-                      Fase intensiva de construccion y mentoria.
+                      Fase intensiva de construcción y mentoría.
                     </p>
                   </div>
                 </div>
@@ -274,7 +274,7 @@ function LandingPage() {
 
         <section className="mx-auto max-w-7xl px-6 py-32 text-center">
           <h2 className="mb-16 font-headline text-4xl font-bold italic md:text-5xl">
-            Codigo de <span className="text-primary-container">Conducta</span>
+            Código de <span className="text-primary-container">Conducta</span>
           </h2>
           <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
             <div className="space-y-4">
@@ -292,12 +292,12 @@ function LandingPage() {
               </h3>
               <p className="font-light text-on-surface-variant">
                 Celebramos las diferentes perspectivas que enriquecen nuestra
-                comunidad tecnica.
+                comunidad técnica.
               </p>
             </div>
             <div className="space-y-4">
               <h3 className="font-label text-xs font-black uppercase tracking-widest text-primary-container">
-                Critica Constructiva
+                Crítica Constructiva
               </h3>
               <p className="font-light text-on-surface-variant">
                 Damos feedback para ayudar a crecer, no para invalidar el

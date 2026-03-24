@@ -13,7 +13,7 @@ function RegistroPage() {
             <span className="font-body text-[10px] uppercase tracking-[0.4em] text-primary-container">system.status(online)</span>
           </div>
           <h1 className="mb-6 font-headline text-7xl italic leading-tight text-on-surface">
-            Unete al <span className="text-primary-container">Club</span>
+            Únete al <span className="text-primary-container">Club</span>
           </h1>
           <p className="max-w-2xl border-l border-outline-variant/30 pl-8 font-body text-xl leading-relaxed text-on-surface-variant/80">
             Estamos construyendo el futuro, un commit a la vez. <br />
@@ -34,7 +34,7 @@ function RegistroPage() {
 
           <div className="group space-y-3">
             <label className="block font-body text-[10px] uppercase tracking-[0.3em] text-[#00FF9D]/60 transition-colors group-focus-within:text-[#00FF9D]">system.input(bio)</label>
-            <textarea className="terminal-glow min-h-[160px] w-full resize-none rounded-none border border-outline-variant/20 bg-transparent p-6 text-lg text-on-surface placeholder:text-on-surface-variant/20 outline-none transition-all duration-500 focus:border-[#00FF9D] focus:ring-0" placeholder="Cuentanos un poco sobre ti y tus metas..." rows={4} />
+            <textarea className="terminal-glow min-h-[160px] w-full resize-none rounded-none border border-outline-variant/20 bg-transparent p-6 text-lg text-on-surface placeholder:text-on-surface-variant/20 outline-none transition-all duration-500 focus:border-[#00FF9D] focus:ring-0" placeholder="Cuéntanos un poco sobre ti y tus metas..." rows={4} />
           </div>
 
           <div className="space-y-6">
