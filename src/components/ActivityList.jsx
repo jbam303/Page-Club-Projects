@@ -71,8 +71,8 @@ export default function ActivityList() {
   }
 
   return (
-    <div className="glass-card mb-12 rounded-lg p-6">
-      <div className="mb-6 flex items-center justify-between">
+    <div className={`glass-card mb-12 rounded-lg p-6 ${isModalOpen ? 'relative z-50' : 'relative z-10'}`}>
+      <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
           <h2 className="font-headline text-2xl font-bold uppercase tracking-widest italic text-primary-container">
             Gestión de Actividades
