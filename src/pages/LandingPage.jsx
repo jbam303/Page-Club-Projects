@@ -36,9 +36,6 @@ function LandingPage() {
               >
                 Únete al Club
               </Link>
-              <button className="w-full rounded-md border border-outline-variant/30 px-10 py-4 text-xs font-bold uppercase tracking-widest text-primary-fixed-dim transition-all hover:bg-primary-container/5 sm:w-auto">
-                Ver Proyectos
-              </button>
             </div>
           </div>
 
