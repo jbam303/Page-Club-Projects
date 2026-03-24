@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "outline-variant": "#3b4a3f",
+            "surface-container-lowest": "#0e0e0e",
+            "primary-container": "#00ff9d",
+            "on-secondary-fixed": "#00210b",
+            "tertiary": "#fffaff",
+            "surface-container-highest": "#353534",
+            "on-primary": "#00391f",
+            "on-secondary-fixed-variant": "#005226",
+            "on-secondary": "#003918",
+            "background": "#131313",
+            "on-primary-container": "#007143",
+            "surface-variant": "#353534",
+            "inverse-surface": "#e5e2e1",
+            "on-surface-variant": "#b9cbbc",
+            "inverse-primary": "#006d40",
+            "secondary-container": "#05e777",
+            "on-error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#00522f",
+            "surface-bright": "#3a3939",
+            "on-tertiary-container": "#766000",
+            "inverse-on-surface": "#313030",
+            "primary-fixed": "#56ffa8",
+            "on-tertiary": "#3b2f00",
+            "error-container": "#93000a",
+            "surface-container-low": "#1c1b1b",
+            "on-primary-fixed": "#002110",
+            "secondary-fixed": "#62ff96",
+            "secondary-fixed-dim": "#00e475",
+            "tertiary-fixed-dim": "#e4c44f",
+            "on-tertiary-fixed": "#231b00",
+            "outline": "#849587",
+            "on-secondary-container": "#00622e",
+            "tertiary-fixed": "#ffe17a",
+            "on-tertiary-fixed-variant": "#554500",
+            "surface-dim": "#131313",
+            "primary-fixed-dim": "#00e38b",
+            "surface": "#131313",
+            "surface-container": "#201f1f",
+            "on-surface": "#e5e2e1",
+            "on-error": "#690005",
+            "surface-tint": "#00e38b",
+            "secondary": "#7dffa2",
+            "on-background": "#e5e2e1",
+            "tertiary-container": "#ffdd65",
+            "primary": "#f4fff3",
+            "surface-container-high": "#2a2a2a",
+            "error": "#ffb4ab"
+          },
+          fontFamily: {
+            "headline": ["Newsreader"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          animation: {
+            "fade-in-up": "fadeInUp 0.8s ease-out forwards"
+          },
+          keyframes: {
+            fadeInUp: {
+              "0%": { opacity: "0", transform: "translateY(20px)" },
+              "100%": { opacity: "1", transform: "translateY(0)" }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    }
+    .terminal-glow:focus {
+      box-shadow: 0 0 15px rgba(0, 255, 157, 0.1);
+      border-color: rgba(0, 255, 157, 0.5) !important;
+    }
+    .animate-delay-100 { animation-delay: 100ms; }
+    .animate-delay-200 { animation-delay: 200ms; }
+    .animate-delay-300 { animation-delay: 300ms; }
+    .animate-delay-400 { animation-delay: 400ms; }
+    .animate-delay-500 { animation-delay: 500ms; }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col overflow-x-hidden">
+  <header class="fixed top-0 w-full z-50 bg-[#131313]/80 backdrop-blur-xl border-b border-[#00FF9D]/10 px-8 py-6 transition-all duration-300">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <a class="flex items-center gap-3 group" href="/">
+        <span class="material-symbols-outlined text-[#00FF9D] text-2xl group-hover:rotate-12 transition-transform">terminal</span>
+        <span class="font-['Newsreader'] italic text-2xl tracking-tight text-[#00FF9D]">CODECLUB</span>
+      </a>
+      <nav class="flex gap-10">
+        <a class="text-[#E5E2E1]/60 hover:text-[#00FF9D] transition-all font-body text-xs tracking-[0.2em] uppercase" href="#">Home</a>
+        <a class="text-[#00FF9D] font-bold hover:text-[#00FF9D] transition-all font-body text-xs tracking-[0.2em] uppercase" href="#">Join</a>
+        <a class="text-[#E5E2E1]/60 hover:text-[#00FF9D] transition-all font-body text-xs tracking-[0.2em] uppercase" href="#">Resources</a>
+        <a class="text-[#E5E2E1]/60 hover:text-[#00FF9D] transition-all font-body text-xs tracking-[0.2em] uppercase" href="#">Profile</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-grow pt-48 pb-40 px-6 max-w-4xl mx-auto w-full relative">
+    <section class="mb-20 animate-fade-in-up">
+      <div class="mb-6 inline-block px-3 py-1 bg-primary-container/5 border-l-2 border-primary-container">
+        <span class="text-[10px] font-body tracking-[0.4em] text-primary-container uppercase">system.status(online)</span>
+      </div>
+      <h1 class="font-headline italic text-7xl text-on-surface leading-tight mb-6">
+        Únete al <span class="text-primary-container">Gremio</span>
+      </h1>
+      <p class="text-on-surface-variant/80 font-body text-xl leading-relaxed max-w-2xl border-l border-outline-variant/30 pl-8">
+        Estamos construyendo el futuro, un commit a la vez. <br/>
+        <span class="text-[#00FF9D]/60 italic">Ingresa a la red. Comparte tus datos.</span>
+      </p>
+    </section>
+
+    <form class="space-y-12 max-w-2xl opacity-0 animate-fade-in-up animate-delay-200" style="animation-fill-mode: forwards;">
+      <div class="space-y-3 group">
+        <label class="block text-[10px] font-body tracking-[0.3em] text-[#00FF9D]/60 uppercase transition-colors group-focus-within:text-[#00FF9D]">system.input(full_name)</label>
+        <input class="w-full bg-transparent border-b border-outline-variant/30 p-4 text-on-surface placeholder:text-on-surface-variant/20 rounded-none focus:ring-0 focus:border-[#00FF9D] terminal-glow transition-all duration-500 outline-none text-lg" placeholder="John Doe" type="text"/>
+      </div>
+
+      <div class="space-y-3 group">
+        <label class="block text-[10px] font-body tracking-[0.3em] text-[#00FF9D]/60 uppercase transition-colors group-focus-within:text-[#00FF9D]">system.input(institutional_email)</label>
+        <input class="w-full bg-transparent border-b border-outline-variant/30 p-4 text-on-surface placeholder:text-on-surface-variant/20 rounded-none focus:ring-0 focus:border-[#00FF9D] terminal-glow transition-all duration-500 outline-none text-lg" placeholder="dev@university.edu" type="email"/>
+      </div>
+
+      <div class="space-y-3 group">
+        <label class="block text-[10px] font-body tracking-[0.3em] text-[#00FF9D]/60 uppercase transition-colors group-focus-within:text-[#00FF9D]">system.input(bio)</label>
+        <textarea class="w-full bg-transparent border border-outline-variant/20 p-6 text-on-surface placeholder:text-on-surface-variant/20 rounded-none focus:ring-0 focus:border-[#00FF9D] terminal-glow transition-all duration-500 resize-none outline-none text-lg min-h-[160px]" placeholder="Cuéntanos un poco sobre ti y tus metas..." rows="4"></textarea>
+      </div>
+
+      <div class="space-y-6">
+        <label class="block text-[10px] font-body tracking-[0.3em] text-[#00FF9D]/60 uppercase">system.select(interests)</label>
+        <div class="flex flex-wrap gap-3">
+          <label class="cursor-pointer group"><input class="hidden peer" type="checkbox"/><span class="px-6 py-3 border border-outline-variant/20 text-[10px] font-body tracking-[0.2em] text-on-surface-variant peer-checked:bg-primary-container/10 peer-checked:border-primary-container peer-checked:text-primary-container hover:border-[#00FF9D]/50 transition-all block uppercase">Frontend</span></label>
+          <label class="cursor-pointer group"><input checked="" class="hidden peer" type="checkbox"/><span class="px-6 py-3 border border-outline-variant/20 text-[10px] font-body tracking-[0.2em] text-on-surface-variant peer-checked:bg-primary-container/10 peer-checked:border-primary-container peer-checked:text-primary-container hover:border-[#00FF9D]/50 transition-all block uppercase">Backend</span></label>
+          <label class="cursor-pointer group"><input class="hidden peer" type="checkbox"/><span class="px-6 py-3 border border-outline-variant/20 text-[10px] font-body tracking-[0.2em] text-on-surface-variant peer-checked:bg-primary-container/10 peer-checked:border-primary-container peer-checked:text-primary-container hover:border-[#00FF9D]/50 transition-all block uppercase">Videojuegos</span></label>
+          <label class="cursor-pointer group"><input class="hidden peer" type="checkbox"/><span class="px-6 py-3 border border-outline-variant/20 text-[10px] font-body tracking-[0.2em] text-on-surface-variant peer-checked:bg-primary-container/10 peer-checked:border-primary-container peer-checked:text-primary-container hover:border-[#00FF9D]/50 transition-all block uppercase">Ciberseguridad</span></label>
+          <label class="cursor-pointer group"><input class="hidden peer" type="checkbox"/><span class="px-6 py-3 border border-outline-variant/20 text-[10px] font-body tracking-[0.2em] text-on-surface-variant peer-checked:bg-primary-container/10 peer-checked:border-primary-container peer-checked:text-primary-container hover:border-[#00FF9D]/50 transition-all block uppercase">IA</span></label>
+        </div>
+      </div>
+
+      <div class="pt-12">
+        <button class="group relative w-full max-w-sm py-6 bg-gradient-to-r from-[#56ffa8] to-[#00e475] text-[#002110] font-bold text-xs tracking-[0.3em] shadow-[0_20px_40px_-10px_rgba(0,255,157,0.3)] hover:shadow-[0_25px_50px_-12px_rgba(0,255,157,0.4)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 uppercase overflow-hidden" type="button">
+          <span class="relative z-10">Enviar Registro</span>
+          <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+        </button>
+        <div class="mt-8 flex items-center gap-3">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
+          <p class="text-[9px] font-body text-on-surface-variant/40 tracking-[0.3em] uppercase">Security protocol: AES-256 Enabled</p>
+        </div>
+      </div>
+    </form>
+
+    <div class="fixed top-1/2 right-[5%] -z-10 opacity-[0.03] pointer-events-none select-none">
+      <span class="text-[400px] font-bold text-primary-container leading-none">{ }</span>
+    </div>
+    <div class="fixed bottom-0 left-[5%] -z-10 opacity-[0.02] pointer-events-none select-none">
+      <span class="text-[300px] font-headline italic text-primary-container leading-none">Code</span>
+    </div>
+  </main>
+
+  <footer class="py-12 border-t border-outline-variant/10 px-8">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+      <p class="text-[10px] text-on-surface-variant/40 tracking-[0.2em] uppercase">© 2024 Club de Desarrollo Tecnológico</p>
+      <div class="flex gap-8">
+        <a class="text-[10px] text-on-surface-variant/40 hover:text-primary-container transition-colors tracking-[0.2em] uppercase" href="#">Twitter</a>
+        <a class="text-[10px] text-on-surface-variant/40 hover:text-primary-container transition-colors tracking-[0.2em] uppercase" href="#">GitHub</a>
+        <a class="text-[10px] text-on-surface-variant/40 hover:text-primary-container transition-colors tracking-[0.2em] uppercase" href="#">Discord</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
