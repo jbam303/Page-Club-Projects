@@ -58,10 +58,13 @@ function RegistroPage() {
         return
       }
 
+      const normalizedRut = rut.toLowerCase().trim()
+      const normalizedEmail = email.toLowerCase().trim()
+
       const { error: insertError } = await supabase.from('miembros').insert([{
         nombre_completo: sanitizeInput(fullName),
-        rut: rut,
-        email: email,
+        rut: normalizedRut,
+        email: normalizedEmail,
         bio: sanitizeInput(bio),
         intereses: interests
       }])
