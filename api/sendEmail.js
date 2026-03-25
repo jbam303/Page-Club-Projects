@@ -59,7 +59,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${resendApiKey}`
       },
       body: JSON.stringify({
-        from: 'Club de Desarrollo de Proyectos Tecnológicos <onboarding@resend.dev>',
+        from: 'Club de Desarrollo de Proyectos Tecnológicos <admin@club-dpt.site>',
         to: [email],
         subject: '¡Solicitud Aprobada! Bienvenido al Club de Desarrollo de Proyectos Tecnológicos',
         html: `
