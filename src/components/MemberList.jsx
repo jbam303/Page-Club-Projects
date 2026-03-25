@@ -113,73 +113,136 @@ export default function MemberList() {
           No hay miembros registrados aún.
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-on-surface">
-            <thead className="border-b border-outline-variant/20 bg-surface-container-high text-xs uppercase text-on-surface-variant">
-              <tr>
-                <th className="px-4 py-3">Nombre</th>
-                <th className="px-4 py-3">Contacto</th>
-                <th className="px-4 py-3">Intereses</th>
-                <th className="px-4 py-3">Ingreso</th>
-                <th className="px-4 py-3">Estado</th>
-                <th className="px-4 py-3 text-right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {members.map((member) => (
-                <tr key={member.id} className="border-b border-outline-variant/10 transition-colors hover:bg-surface-container-low">
-                  <td className="px-4 py-4 font-bold">
-                    <div className="flex flex-col">
-                      <span>{member.nombre_completo}</span>
-                      <span className="font-mono text-[10px] text-primary-container/70 mt-1">
-                        RUT: {member.rut || 'N/A'}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-4">
-                    <div className="flex flex-col">
-                      <a href={`mailto:${member.email}`} className="text-[#00FF9D] hover:underline">{member.email}</a>
-                      {member.bio && <span className="text-xs font-light text-on-surface-variant/80 mt-1 line-clamp-2" title={member.bio}>{member.bio}</span>}
-                    </div>
-                  </td>
-                  <td className="px-4 py-4">
+        <>
+          {/* Vista móvil (Tarjetas) */}
+          <div className="grid grid-cols-1 gap-4 md:hidden">
+            {members.map((member) => (
+              <div key={member.id} className="rounded-lg border border-outline-variant/20 bg-surface-container-low p-4 flex flex-col gap-3">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-bold text-[15px]">{member.nombre_completo}</h3>
+                    <p className="font-mono text-[10px] text-primary-container/70">RUT: {member.rut || 'N/A'}</p>
+                  </div>
+                  <span className={`block rounded px-2 py-1 font-mono text-[10px] ${member.estado === 'aprobado' ? 'bg-[#00FF9D]/10 text-[#00FF9D]' : 'bg-primary-container/10 text-primary-container'}`}>
+                    {member.estado || 'Pendiente'}
+                  </span>
+                </div>
+                
+                <div className="flex flex-col gap-1 text-sm mt-1">
+                  <a href={`mailto:${member.email}`} className="text-[#00FF9D] hover:underline font-mono text-[11px] truncate">{member.email}</a>
+                  {member.bio && (
+                    <p className="text-sm font-light text-on-surface-variant/90 break-words mt-1 leading-relaxed">
+                      {member.bio}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-2 mt-1">
+                  {member.intereses && member.intereses.length > 0 && (
                     <div className="flex flex-wrap gap-1">
-                      {member.intereses && member.intereses.map(i => (
+                      {member.intereses.map(i => (
                         <span key={i} className="rounded bg-surface-container-high border border-outline-variant/20 px-1.5 py-0.5 font-mono text-[9px] text-on-surface-variant">
                           {i}
                         </span>
                       ))}
                     </div>
-                  </td>
-                  <td className="px-4 py-4 font-mono text-[10px] uppercase text-primary-container/70">
-                    {new Date(member.created_at).toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-4">
-                    <span className={`rounded px-2 py-1 font-mono text-[10px] ${member.estado === 'aprobado' ? 'bg-[#00FF9D]/10 text-[#00FF9D]' : 'bg-primary-container/10 text-primary-container'}`}>
-                      {member.estado || 'Pendiente'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4 text-right">
+                  )}
+                </div>
+                
+                <div className="flex justify-between items-center mt-3 pt-3 border-t border-outline-variant/10">
+                  <span className="font-mono text-[10px] uppercase text-primary-container/70">
+                    Ingreso: {new Date(member.created_at).toLocaleDateString()}
+                  </span>
+                  <div className="flex gap-4 text-xs font-bold font-mono uppercase tracking-wider">
                     <button
                       onClick={() => handleToggleStatus(member)}
-                      className="mr-3 text-[#00FF9D] hover:text-[#00cc7d]"
-                      title={member.estado === 'aprobado' ? 'Marcar pendiente' : 'Aprobar acceso'}
+                      className="text-[#00FF9D] hover:text-[#00cc7d] transition-colors"
                     >
                       {member.estado === 'aprobado' ? 'Revertir' : 'Aprobar'}
                     </button>
                     <button
                       onClick={() => handleDeleteClick(member)}
-                      className="text-error hover:text-[#ff897d]"
-                      title="Eliminar registro"
+                      className="text-error hover:text-[#ff897d] transition-colors"
                     >
                       Eliminar
                     </button>
-                  </td>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Vista desktop (Tabla) */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-left text-sm text-on-surface">
+              <thead className="border-b border-outline-variant/20 bg-surface-container-high text-xs uppercase text-on-surface-variant">
+                <tr>
+                  <th className="px-4 py-3">Nombre</th>
+                  <th className="px-4 py-3 min-w-[300px]">Contacto / Bio</th>
+                  <th className="px-4 py-3 min-w-[200px]">Intereses</th>
+                  <th className="px-4 py-3">Ingreso</th>
+                  <th className="px-4 py-3">Estado</th>
+                  <th className="px-4 py-3 text-right text-nowrap">Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {members.map((member) => (
+                  <tr key={member.id} className="border-b border-outline-variant/10 transition-colors hover:bg-surface-container-low">
+                    <td className="px-4 py-4 font-bold align-top">
+                      <div className="flex flex-col">
+                        <span>{member.nombre_completo}</span>
+                        <span className="font-mono text-[10px] text-primary-container/70 mt-1">
+                          RUT: {member.rut || 'N/A'}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-4 align-top">
+                      <div className="flex flex-col gap-2">
+                        <a href={`mailto:${member.email}`} className="text-[#00FF9D] hover:underline w-fit">{member.email}</a>
+                        {member.bio && <span className="text-sm font-light text-on-surface-variant/90 break-words leading-relaxed max-w-sm">{member.bio}</span>}
+                      </div>
+                    </td>
+                    <td className="px-4 py-4 align-top">
+                      <div className="flex flex-wrap gap-1">
+                        {member.intereses && member.intereses.map(i => (
+                          <span key={i} className="rounded bg-surface-container-high border border-outline-variant/20 px-1.5 py-0.5 font-mono text-[9px] text-on-surface-variant">
+                            {i}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="px-4 py-4 font-mono text-[10px] uppercase text-primary-container/70 align-top pt-5">
+                      {new Date(member.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-4 align-top pt-4">
+                      <span className={`rounded px-2 py-1 font-mono text-[10px] ${member.estado === 'aprobado' ? 'bg-[#00FF9D]/10 text-[#00FF9D]' : 'bg-primary-container/10 text-primary-container'}`}>
+                        {member.estado || 'Pendiente'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-4 text-right align-top pt-4">
+                      <div className="flex justify-end gap-3 flex-wrap">
+                        <button
+                          onClick={() => handleToggleStatus(member)}
+                          className="mr-2 text-[#00FF9D] hover:text-[#00cc7d] whitespace-nowrap"
+                          title={member.estado === 'aprobado' ? 'Marcar pendiente' : 'Aprobar acceso'}
+                        >
+                          {member.estado === 'aprobado' ? 'Revertir' : 'Aprobar'}
+                        </button>
+                        <button
+                          onClick={() => handleDeleteClick(member)}
+                          className="text-error hover:text-[#ff897d] whitespace-nowrap"
+                          title="Eliminar registro"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {/* Delete Confirmation Modal */}
