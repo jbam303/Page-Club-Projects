@@ -26,15 +26,18 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${resendApiKey}`
       },
       body: JSON.stringify({
-        from: 'Code Club <onboarding@resend.dev>', // Replace with custom domain if available
+        from: 'Club de Desarrollo de Proyectos Tecnológicos <onboarding@resend.dev>',
         to: [email],
-        subject: '¡Solicitud Aprobada! Bienvenido a Code Club',
+        subject: '¡Solicitud Aprobada! Bienvenido al Club de Desarrollo de Proyectos Tecnológicos',
         html: `
           <div style="font-family: monospace; color: #111; padding: 20px; text-align: left;">
             <h2 style="color: #00FF9D; background: #111; padding: 10px; display: inline-block;">>_ ACCESO CONCEDIDO</h2>
             <p>Hola <strong>${name}</strong>,</p>
             <p>Tu solicitud de ingreso ha sido evaluada y <strong>aprobada</strong> por el administrador del sistema.</p>
-            <p>Bienvenido oficialmente al Code Club. Mantente atento a nuestras próximas comunicaciones donde te compartiremos las directrices de acceso al servidor de Discord y herramientas de trabajo.</p>
+            <p>Bienvenido oficialmente al Club de Desarrollo de Proyectos Tecnológicos. Mantente atento a nuestras próximas comunicaciones donde te compartiremos las directrices de acceso al servidor de Discord y herramientas de trabajo.</p>
+            <br/>
+            <p>Únete a nuestro grupo oficial de WhatsApp para presentarte, conocer a los demás integrantes y estar al tanto de los próximos anuncios:</p>
+            <p><a href="https://chat.whatsapp.com/BVe0EXdZXZa1Il3VSOylfw" style="color: #00FF9D; text-decoration: none; border-bottom: 1px dashed #00FF9D;">Entrar al grupo de WhatsApp</a></p>
             <br/>
             <p><em>System.Exit(0)</em></p>
           </div>

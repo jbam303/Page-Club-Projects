@@ -25,7 +25,7 @@ function LayoutFooter() {
           </a>
           <a
             className="font-mono text-[10px] uppercase tracking-widest text-[#E5E2E1]/40 opacity-80 transition-colors duration-200 hover:text-[#00FF9D] hover:opacity-100"
-            href="#"
+            href="https://discord.gg/5gfQjnJc"
           >
             Discord
           </a>
