@@ -6,7 +6,8 @@ export default function ActivityForm({ initialData = null, onClose }) {
   const [description, setDescription] = useState(initialData?.descripcion || '')
   const [status, setStatus] = useState(initialData?.estado || 'Pendiente')
   const [date, setDate] = useState(initialData?.fecha_evento ? new Date(initialData.fecha_evento).toISOString().slice(0, 16) : '')
-  const [lugar, setLugar] = useState(initialData?.lugar || '') // Added lugar state
+  const [endDate, setEndDate] = useState(initialData?.fecha_fin ? new Date(initialData.fecha_fin).toISOString().slice(0, 16) : '')
+  const [lugar, setLugar] = useState(initialData?.lugar || '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -22,7 +23,8 @@ export default function ActivityForm({ initialData = null, onClose }) {
       descripcion: description,
       estado: status,
       fecha_evento: date ? new Date(date).toISOString() : null,
-      lugar: lugar, // Added lugar to payload
+      fecha_fin: endDate ? new Date(endDate).toISOString() : null,
+      lugar: lugar,
     }
 
     let resultError;
@@ -114,16 +116,30 @@ export default function ActivityForm({ initialData = null, onClose }) {
             </select>
           </div>
 
-          <div>
-            <label className="mb-1 block text-xs uppercase tracking-wider text-on-surface-variant">
-              Fecha del Evento
-            </label>
-            <input
-              type="datetime-local"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="terminal-glow w-full rounded border border-outline-variant/30 bg-surface px-3 py-2 text-on-surface transition-all focus:outline-none [color-scheme:dark]"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="mb-1 block text-xs uppercase tracking-wider text-on-surface-variant">
+                Fecha de Inicio
+              </label>
+              <input
+                type="datetime-local"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="terminal-glow w-full rounded border border-outline-variant/30 bg-surface px-3 py-2 text-on-surface transition-all focus:outline-none [color-scheme:dark]"
+              />
+            </div>
+            
+            <div>
+              <label className="mb-1 block text-xs uppercase tracking-wider text-on-surface-variant">
+                Fecha de Término (Opcional)
+              </label>
+              <input
+                type="datetime-local"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="terminal-glow w-full rounded border border-outline-variant/30 bg-surface px-3 py-2 text-on-surface transition-all focus:outline-none [color-scheme:dark]"
+              />
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-4">

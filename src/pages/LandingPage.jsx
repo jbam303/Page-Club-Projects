@@ -35,7 +35,7 @@ function LandingPage() {
   const getCalendarUrl = (activity) => {
     if (!activity.fecha_evento) return "#"
     const start = new Date(activity.fecha_evento)
-    const end = new Date(start.getTime() + 60 * 60 * 1000) // Default +1 hour
+    const end = activity.fecha_fin ? new Date(activity.fecha_fin) : new Date(start.getTime() + 60 * 60 * 1000)
 
     const formatGoogleDate = (d) => {
       return d.toISOString().replace(/-|:|\.\d\d\d/g, "")
@@ -43,7 +43,7 @@ function LandingPage() {
 
     const startDateStr = formatGoogleDate(start)
     const endDateStr = formatGoogleDate(end)
-    
+
     const title = encodeURIComponent(activity.titulo || '')
     const desc = encodeURIComponent(activity.descripcion || '')
     const loc = encodeURIComponent(activity.lugar || '')
@@ -55,13 +55,33 @@ function LandingPage() {
     // sch.dia = "Lunes", "Martes", etc.
     const dayMap = { "Lunes": "MO", "Martes": "TU", "Miércoles": "WE", "Jueves": "TH", "Viernes": "FR", "Sábado": "SA", "Domingo": "SU" }
     const rruleDay = dayMap[sch.dia] || "MO"
-    
+
     // We create a dummy start date for "next occurring day" to make the template happy
     const title = encodeURIComponent(`Club DPT: Encuentro de ${sch.dia}`)
     const details = encodeURIComponent(`Horario: ${sch.horas}`)
     const location = encodeURIComponent(sch.lugar || '')
-    
+
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&recur=RRULE:FREQ=WEEKLY;BYDAY=${rruleDay}`
+  }
+
+  const formatEventDate = (act) => {
+    if (!act.fecha_evento) return 'Próximamente...'
+    
+    const startStr = new Date(act.fecha_evento).toLocaleDateString('es-ES', { 
+      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+    })
+    
+    if (act.fecha_fin) {
+      const startDate = new Date(act.fecha_evento)
+      const endDate = new Date(act.fecha_fin)
+      
+      if (startDate.toDateString() !== endDate.toDateString()) {
+         return `${startStr} - ${endDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}`
+      }
+      return `${startStr} - ${endDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`
+    }
+    
+    return startStr
   }
 
   return (
@@ -137,7 +157,6 @@ function LandingPage() {
           </div>
         </section>
 
-        {/* ACTIVIDADES MOVIDAS AQUÍ ARRIBA */}
         <section className="bg-surface-container-lowest px-6 py-24">
           <div className="mx-auto max-w-4xl">
             <div className="mb-12 flex items-center gap-4">
@@ -162,16 +181,15 @@ function LandingPage() {
                   activities.map((act, index) => {
                     const isCompleted = act.estado === 'Completado'
                     const isLast = index === activities.length - 1
-                    
+
                     return (
                       <div key={act.id} className="flex items-start gap-6">
                         <div className="flex flex-col items-center">
                           <span
-                            className={`material-symbols-outlined rounded ${
-                              isCompleted 
-                                ? "bg-primary-container/10 p-2 text-primary-container" 
+                            className={`material-symbols-outlined rounded ${isCompleted
+                                ? "bg-primary-container/10 p-2 text-primary-container"
                                 : "border border-outline-variant/20 p-2 text-on-surface-variant/20"
-                            }`}
+                              }`}
                             style={isCompleted ? { fontVariationSettings: "'FILL' 1" } : {}}
                           >
                             {isCompleted ? 'check_circle' : (act.estado === 'En progreso' ? 'more_horiz' : 'radio_button_unchecked')}
@@ -182,7 +200,7 @@ function LandingPage() {
                         </div>
                         <div>
                           <div className={`mb-1 font-mono text-[10px] uppercase tracking-widest text-primary-container/70 ${isCompleted ? 'opacity-40' : ''}`}>
-                            {act.fecha_evento ? new Date(act.fecha_evento).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Próximamente...'}
+                            {formatEventDate(act)}
                           </div>
                           <h4 className={`mb-1 font-bold text-on-surface ${isCompleted ? 'line-through opacity-60' : ''}`}>
                             {act.titulo}
@@ -195,7 +213,7 @@ function LandingPage() {
                           <p className={`text-sm font-light text-on-surface-variant ${isCompleted ? 'line-through opacity-60' : ''}`}>
                             {act.descripcion}
                           </p>
-                          
+
                           {/* Calendar Button */}
                           {!isCompleted && act.fecha_evento && (
                             <div className="mt-4 flex">

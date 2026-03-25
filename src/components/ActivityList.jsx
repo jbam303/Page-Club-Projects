@@ -79,7 +79,7 @@ export default function ActivityList() {
   const getCalendarUrl = (activity) => {
     if (!activity.fecha_evento) return "#"
     const start = new Date(activity.fecha_evento)
-    const end = new Date(start.getTime() + 60 * 60 * 1000)
+    const end = activity.fecha_fin ? new Date(activity.fecha_fin) : new Date(start.getTime() + 60 * 60 * 1000)
 
     const formatGoogleDate = (d) => {
       return d.toISOString().replace(/-|:|\.\d\d\d/g, "")
@@ -93,6 +93,20 @@ export default function ActivityList() {
     const loc = encodeURIComponent(activity.lugar || '')
 
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDateStr}/${endDateStr}&details=${desc}&location=${loc}`
+  }
+
+  const formatEventDate = (act) => {
+    if (!act.fecha_evento) return 'Próximamente...'
+    const startStr = new Date(act.fecha_evento).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    if (act.fecha_fin) {
+      const startDate = new Date(act.fecha_evento)
+      const endDate = new Date(act.fecha_fin)
+      if (startDate.toDateString() !== endDate.toDateString()) {
+         return `${startStr} - ${endDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}`
+      }
+      return `${startStr} - ${endDate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`
+    }
+    return startStr
   }
 
   return (
@@ -148,7 +162,7 @@ export default function ActivityList() {
                   <td className={`px-4 py-4 font-light text-on-surface-variant ${act.estado === 'Completado' ? 'line-through opacity-50' : ''}`}>{act.descripcion}</td>
                   <td className={`px-4 py-4 text-xs ${act.estado === 'Completado' ? 'line-through opacity-50' : ''}`}>{act.lugar || '—'}</td>
                   <td className={`px-4 py-4 font-mono text-[10px] uppercase text-primary-container/70 ${act.estado === 'Completado' ? 'line-through opacity-50' : ''}`}>
-                    {act.fecha_evento ? new Date(act.fecha_evento).toLocaleDateString('es-ES') : '—'}
+                    {formatEventDate(act)}
                   </td>
                   <td className="px-4 py-4">
                     <span className={`rounded px-2 py-1 font-mono text-[10px] ${act.estado === 'Completado' ? 'bg-[#00FF9D]/10 text-[#00FF9D]' : 'bg-primary-container/10 text-primary-container'}`}>
