@@ -10,6 +10,7 @@ export default function ActivityList() {
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingActivity, setEditingActivity] = useState(null)
+  const [deletingActivity, setDeletingActivity] = useState(null)
 
   const fetchActivities = async () => {
     setLoading(true)
@@ -31,15 +32,20 @@ export default function ActivityList() {
     fetchActivities()
   }, [])
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('¿Estás seguro de eliminar esta actividad?')) return
+  const confirmDelete = async () => {
+    if (!deletingActivity) return
     
-    const { error } = await supabase.from('activities').delete().eq('id', id)
+    const { error } = await supabase.from('activities').delete().eq('id', deletingActivity.id)
     if (error) {
       alert('Error al eliminar: ' + error.message)
     } else {
       fetchActivities()
     }
+    setDeletingActivity(null)
+  }
+
+  const handleDeleteClick = (act) => {
+    setDeletingActivity(act)
   }
 
   const handleToggleStatus = async (act) => {
@@ -144,7 +150,7 @@ export default function ActivityList() {
                       Editar
                     </button>
                     <button
-                      onClick={() => handleDelete(act.id)}
+                      onClick={() => handleDeleteClick(act)}
                       className="text-error hover:text-[#ff897d]"
                       title="Eliminar"
                     >
@@ -163,6 +169,39 @@ export default function ActivityList() {
           initialData={editingActivity}
           onClose={handleModalClose}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deletingActivity && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-md animate-fade-in-up overflow-hidden rounded-lg border border-error/20 bg-surface shadow-2xl">
+            <div className="bg-error-container/10 p-6 text-center">
+              <span className="material-symbols-outlined mb-4 text-5xl text-error">
+                warning
+              </span>
+              <h3 className="mb-2 font-headline text-2xl font-bold uppercase tracking-widest text-error">
+                ¿Eliminar Actividad?
+              </h3>
+              <p className="font-light text-on-surface-variant">
+                Estás a punto de borrar la actividad <strong className="text-on-surface">{deletingActivity.titulo}</strong> del registro. Esta acción no se puede deshacer.
+              </p>
+            </div>
+            <div className="flex gap-4 border-t border-outline-variant/10 bg-surface-container-low p-6">
+              <button
+                onClick={() => setDeletingActivity(null)}
+                className="flex-1 rounded border border-outline-variant/20 px-4 py-3 text-xs font-bold uppercase tracking-widest text-on-surface transition-all hover:bg-surface-container-high"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="flex-1 rounded bg-error px-4 py-3 text-xs font-bold uppercase tracking-widest text-on-error shadow-[0_0_15px_rgba(255,89,86,0.3)] transition-all hover:bg-[#ff897d]"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

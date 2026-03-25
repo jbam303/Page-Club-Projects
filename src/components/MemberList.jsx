@@ -5,6 +5,7 @@ export default function MemberList() {
   const [members, setMembers] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [deletingMember, setDeletingMember] = useState(null)
 
   const fetchMembers = async () => {
     setLoading(true)
@@ -25,15 +26,20 @@ export default function MemberList() {
     fetchMembers()
   }, [])
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('¿Estás seguro de eliminar a este miembro del club?')) return
+  const confirmDelete = async () => {
+    if (!deletingMember) return
     
-    const { error } = await supabase.from('miembros').delete().eq('id', id)
+    const { error } = await supabase.from('miembros').delete().eq('id', deletingMember.id)
     if (error) {
       alert('Error al eliminar: ' + error.message)
     } else {
       fetchMembers()
     }
+    setDeletingMember(null)
+  }
+
+  const handleDeleteClick = (member) => {
+    setDeletingMember(member)
   }
 
   const handleToggleStatus = async (member) => {
@@ -162,7 +168,7 @@ export default function MemberList() {
                       {member.estado === 'aprobado' ? 'Revertir' : 'Aprobar'}
                     </button>
                     <button
-                      onClick={() => handleDelete(member.id)}
+                      onClick={() => handleDeleteClick(member)}
                       className="text-error hover:text-[#ff897d]"
                       title="Eliminar registro"
                     >
@@ -173,6 +179,39 @@ export default function MemberList() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deletingMember && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-md animate-fade-in-up overflow-hidden rounded-lg border border-error/20 bg-surface shadow-2xl">
+            <div className="bg-error-container/10 p-6 text-center">
+              <span className="material-symbols-outlined mb-4 text-5xl text-error">
+                warning
+              </span>
+              <h3 className="mb-2 font-headline text-2xl font-bold uppercase tracking-widest text-error">
+                ¿Eliminar Miembro?
+              </h3>
+              <p className="font-light text-on-surface-variant">
+                Estás a punto de eliminar a <strong className="text-on-surface">{deletingMember.nombre_completo}</strong> del sistema. Esta acción no se puede deshacer y borrará todos sus registros.
+              </p>
+            </div>
+            <div className="flex gap-4 border-t border-outline-variant/10 bg-surface-container-low p-6">
+              <button
+                onClick={() => setDeletingMember(null)}
+                className="flex-1 rounded border border-outline-variant/20 px-4 py-3 text-xs font-bold uppercase tracking-widest text-on-surface transition-all hover:bg-surface-container-high"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="flex-1 rounded bg-error px-4 py-3 text-xs font-bold uppercase tracking-widest text-on-error shadow-[0_0_15px_rgba(255,89,86,0.3)] transition-all hover:bg-[#ff897d]"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
