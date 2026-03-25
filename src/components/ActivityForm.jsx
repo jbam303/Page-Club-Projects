@@ -6,6 +6,7 @@ export default function ActivityForm({ initialData = null, onClose }) {
   const [description, setDescription] = useState(initialData?.descripcion || '')
   const [status, setStatus] = useState(initialData?.estado || 'Pendiente')
   const [date, setDate] = useState(initialData?.fecha_evento ? new Date(initialData.fecha_evento).toISOString().slice(0, 16) : '')
+  const [lugar, setLugar] = useState(initialData?.lugar || '') // Added lugar state
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -16,11 +17,12 @@ export default function ActivityForm({ initialData = null, onClose }) {
     setLoading(true)
     setError(null)
 
-    const payload = { 
-      titulo: title, 
-      descripcion: description, 
+    const payload = {
+      titulo: title,
+      descripcion: description,
       estado: status,
-      fecha_evento: date ? new Date(date).toISOString() : null
+      fecha_evento: date ? new Date(date).toISOString() : null,
+      lugar: lugar, // Added lugar to payload
     }
 
     let resultError;

@@ -6,6 +6,7 @@ import LayoutFooter from '../components/LayoutFooter'
 
 function LandingPage() {
   const [activities, setActivities] = useState([])
+  const [schedules, setSchedules] = useState([])
 
   useEffect(() => {
     const fetchActivities = async () => {
@@ -15,7 +16,15 @@ function LandingPage() {
         .order('id', { ascending: true })
       if (data) setActivities(data)
     }
+    const fetchSchedules = async () => {
+      const { data } = await supabase
+        .from('horarios_club')
+        .select('*')
+        .order('dia', { ascending: true })
+      if (data) setSchedules(data)
+    }
     fetchActivities()
+    fetchSchedules()
   }, [])
   return (
     <div className="scrollbar-codeclub bg-surface text-on-surface font-body">
@@ -62,9 +71,19 @@ function LandingPage() {
                 Disponibilidad
               </span>
             </div>
-            <div className="h-8 w-px bg-outline-variant/20" />
-            <div className="font-mono text-xs text-primary-fixed">
-              Lunes, Miércoles y Jueves: 11AM - 6PM
+            <div className="flex flex-col gap-3 border-l border-outline-variant/20 pl-6">
+              {schedules.length > 0 ? (
+                schedules.map((sch) => (
+                  <div key={sch.id} className="font-mono text-xs">
+                    <span className="text-primary-fixed block mb-1">{sch.dia}: {sch.horas}</span>
+                    <span className="text-on-surface-variant/70 text-[10px]">📍 {sch.lugar}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="font-mono text-xs text-primary-fixed">
+                  Esperando horarios...
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -118,6 +137,11 @@ function LandingPage() {
                           </div>
                           <h4 className={`mb-1 font-bold text-on-surface ${isCompleted ? 'line-through opacity-60' : ''}`}>
                             {act.titulo}
+                            {act.lugar && (
+                              <span className="ml-3 inline-block rounded bg-surface-container-high border border-outline-variant/20 px-2 py-0.5 font-mono text-[9px] font-normal uppercase tracking-wider text-primary-container/80">
+                                📍 {act.lugar}
+                              </span>
+                            )}
                           </h4>
                           <p className={`text-sm font-light text-on-surface-variant ${isCompleted ? 'line-through opacity-60' : ''}`}>
                             {act.descripcion}

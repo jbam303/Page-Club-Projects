@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import LayoutHeader from '../components/LayoutHeader'
 import LayoutFooter from '../components/LayoutFooter'
 import ActivityList from '../components/ActivityList'
 import ProjectUpload from '../components/ProjectUpload'
 import MemberList from '../components/MemberList'
+import ScheduleManager from '../components/ScheduleManager'
 
 export default function AdminDashboard() {
   const navigate = useNavigate()
@@ -41,6 +43,10 @@ export default function AdminDashboard() {
             <MemberList />
           </div>
           
+          <div className="mb-12">
+            <ScheduleManager />
+          </div>
+
           <div className="mb-12">
             <ActivityList />
           </div>

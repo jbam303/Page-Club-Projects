@@ -116,6 +116,7 @@ export default function ActivityList() {
               <tr>
                 <th className="px-4 py-3">Título</th>
                 <th className="px-4 py-3">Descripción</th>
+                <th className="px-4 py-3">Lugar</th>
                 <th className="px-4 py-3">Fecha</th>
                 <th className="px-4 py-3">Estado</th>
                 <th className="px-4 py-3 text-right">Acciones</th>
@@ -126,6 +127,7 @@ export default function ActivityList() {
                 <tr key={act.id} className="border-b border-outline-variant/10 transition-colors hover:bg-surface-container-low">
                   <td className={`px-4 py-4 font-bold ${act.estado === 'Completado' ? 'line-through opacity-50' : ''}`}>{act.titulo}</td>
                   <td className={`px-4 py-4 font-light text-on-surface-variant ${act.estado === 'Completado' ? 'line-through opacity-50' : ''}`}>{act.descripcion}</td>
+                  <td className={`px-4 py-4 text-xs ${act.estado === 'Completado' ? 'line-through opacity-50' : ''}`}>{act.lugar || '—'}</td>
                   <td className={`px-4 py-4 font-mono text-[10px] uppercase text-primary-container/70 ${act.estado === 'Completado' ? 'line-through opacity-50' : ''}`}>
                     {act.fecha_evento ? new Date(act.fecha_evento).toLocaleDateString('es-ES') : '—'}
                   </td>
