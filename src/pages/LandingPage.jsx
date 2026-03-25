@@ -69,6 +69,71 @@ function LandingPage() {
           </div>
         </section>
 
+        {/* ACTIVIDADES MOVIDAS AQUÍ ARRIBA */}
+        <section className="bg-surface-container-lowest px-6 py-24">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-12 flex items-center gap-4">
+              <div className="h-px w-12 bg-primary-container" />
+              <h2 className="font-headline text-3xl font-bold uppercase tracking-widest italic">
+                Actividades_Log
+              </h2>
+            </div>
+            <div className="overflow-hidden rounded-lg border border-outline-variant/10 bg-surface shadow-2xl">
+              <div className="flex items-center justify-between border-b border-outline-variant/10 bg-surface-container-high px-6 py-3">
+                <div className="flex gap-2">
+                  <div className="h-3 w-3 rounded-full bg-[#FF5F56]" />
+                  <div className="h-3 w-3 rounded-full bg-[#FFBD2E]" />
+                  <div className="h-3 w-3 rounded-full bg-[#27C93F]" />
+                </div>
+                <span className="font-mono text-[10px] text-on-surface-variant/40">
+                  schedule.json
+                </span>
+              </div>
+              <div className="space-y-8 p-8">
+                {activities.length > 0 ? (
+                  activities.map((act, index) => {
+                    const isCompleted = act.estado === 'Completado'
+                    const isLast = index === activities.length - 1
+                    
+                    return (
+                      <div key={act.id} className="flex items-start gap-6">
+                        <div className="flex flex-col items-center">
+                          <span
+                            className={`material-symbols-outlined rounded ${
+                              isCompleted 
+                                ? "bg-primary-container/10 p-2 text-primary-container" 
+                                : "border border-outline-variant/20 p-2 text-on-surface-variant/20"
+                            }`}
+                            style={isCompleted ? { fontVariationSettings: "'FILL' 1" } : {}}
+                          >
+                            {isCompleted ? 'check_circle' : (act.estado === 'En progreso' ? 'more_horiz' : 'radio_button_unchecked')}
+                          </span>
+                          {!isLast && (
+                            <div className={`my-2 h-12 w-px ${isCompleted ? 'bg-primary-container/20' : 'bg-outline-variant/10'}`} />
+                          )}
+                        </div>
+                        <div>
+                          <div className={`mb-1 font-mono text-[10px] uppercase tracking-widest text-primary-container/70 ${isCompleted ? 'opacity-40' : ''}`}>
+                            {act.fecha_evento ? new Date(act.fecha_evento).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Próximamente...'}
+                          </div>
+                          <h4 className={`mb-1 font-bold text-on-surface ${isCompleted ? 'line-through opacity-60' : ''}`}>
+                            {act.titulo}
+                          </h4>
+                          <p className={`text-sm font-light text-on-surface-variant ${isCompleted ? 'line-through opacity-60' : ''}`}>
+                            {act.descripcion}
+                          </p>
+                        </div>
+                      </div>
+                    )
+                  })
+                ) : (
+                  <p className="text-center font-mono text-sm text-on-surface-variant">Esperando nuevos logs del sistema...</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="mx-auto max-w-7xl px-6 py-32">
           <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-12">
             <div className="md:col-span-5">
@@ -187,70 +252,6 @@ function LandingPage() {
               <span className="material-symbols-outlined opacity-0 transition-opacity text-primary-container group-hover:opacity-100">
 
               </span>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-surface-container-lowest px-6 py-24">
-          <div className="mx-auto max-w-4xl">
-            <div className="mb-12 flex items-center gap-4">
-              <div className="h-px w-12 bg-primary-container" />
-              <h2 className="font-headline text-3xl font-bold uppercase tracking-widest italic">
-                Actividades_Log
-              </h2>
-            </div>
-            <div className="overflow-hidden rounded-lg border border-outline-variant/10 bg-surface shadow-2xl">
-              <div className="flex items-center justify-between border-b border-outline-variant/10 bg-surface-container-high px-6 py-3">
-                <div className="flex gap-2">
-                  <div className="h-3 w-3 rounded-full bg-[#FF5F56]" />
-                  <div className="h-3 w-3 rounded-full bg-[#FFBD2E]" />
-                  <div className="h-3 w-3 rounded-full bg-[#27C93F]" />
-                </div>
-                <span className="font-mono text-[10px] text-on-surface-variant/40">
-                  schedule.json
-                </span>
-              </div>
-              <div className="space-y-8 p-8">
-                {activities.length > 0 ? (
-                  activities.map((act, index) => {
-                    const isCompleted = act.estado === 'Completado'
-                    const isLast = index === activities.length - 1
-                    
-                    return (
-                      <div key={act.id} className="flex items-start gap-6">
-                        <div className="flex flex-col items-center">
-                          <span
-                            className={`material-symbols-outlined rounded ${
-                              isCompleted 
-                                ? "bg-primary-container/10 p-2 text-primary-container" 
-                                : "border border-outline-variant/20 p-2 text-on-surface-variant/20"
-                            }`}
-                            style={isCompleted ? { fontVariationSettings: "'FILL' 1" } : {}}
-                          >
-                            {isCompleted ? 'check_circle' : (act.estado === 'En progreso' ? 'more_horiz' : 'radio_button_unchecked')}
-                          </span>
-                          {!isLast && (
-                            <div className={`my-2 h-12 w-px ${isCompleted ? 'bg-primary-container/20' : 'bg-outline-variant/10'}`} />
-                          )}
-                        </div>
-                        <div>
-                          <div className={`mb-1 font-mono text-[10px] uppercase tracking-widest text-primary-container/70 ${isCompleted ? 'opacity-40' : ''}`}>
-                            {act.fecha_evento ? new Date(act.fecha_evento).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Próximamente...'}
-                          </div>
-                          <h4 className={`mb-1 font-bold text-on-surface ${isCompleted ? 'line-through opacity-60' : ''}`}>
-                            {act.titulo}
-                          </h4>
-                          <p className={`text-sm font-light text-on-surface-variant ${isCompleted ? 'line-through opacity-60' : ''}`}>
-                            {act.descripcion}
-                          </p>
-                        </div>
-                      </div>
-                    )
-                  })
-                ) : (
-                  <p className="text-center font-mono text-sm text-on-surface-variant">Esperando nuevos logs del sistema...</p>
-                )}
-              </div>
             </div>
           </div>
         </section>
