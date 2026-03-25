@@ -76,6 +76,25 @@ export default function ActivityList() {
     }
   }
 
+  const getCalendarUrl = (activity) => {
+    if (!activity.fecha_evento) return "#"
+    const start = new Date(activity.fecha_evento)
+    const end = new Date(start.getTime() + 60 * 60 * 1000)
+
+    const formatGoogleDate = (d) => {
+      return d.toISOString().replace(/-|:|\.\d\d\d/g, "")
+    }
+
+    const startDateStr = formatGoogleDate(start)
+    const endDateStr = formatGoogleDate(end)
+    
+    const title = encodeURIComponent(activity.titulo || '')
+    const desc = encodeURIComponent(activity.descripcion || '')
+    const loc = encodeURIComponent(activity.lugar || '')
+
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDateStr}/${endDateStr}&details=${desc}&location=${loc}`
+  }
+
   return (
     <div className={`glass-card mb-12 rounded-lg p-6 ${isModalOpen ? 'relative z-50' : 'relative z-10'}`}>
       <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
@@ -136,7 +155,18 @@ export default function ActivityList() {
                       {act.estado || 'Pendiente'}
                     </span>
                   </td>
-                  <td className="px-4 py-4 text-right">
+                  <td className="px-4 py-4 text-right flex items-center justify-end gap-3">
+                    {act.fecha_evento && act.estado !== 'Completado' && (
+                      <a
+                        href={getCalendarUrl(act)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[#00FF9D] hover:text-[#00cc7d]"
+                        title="Añadir a Google Calendar"
+                      >
+                        <span className="material-symbols-outlined text-lg">calendar_add_on</span>
+                      </a>
+                    )}
                     <button
                       onClick={() => handleToggleStatus(act)}
                       className="mr-3 text-[#00FF9D] hover:text-[#00cc7d]"
