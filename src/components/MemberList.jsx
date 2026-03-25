@@ -37,11 +37,27 @@ export default function MemberList() {
   }
 
   const handleToggleStatus = async (member) => {
-    const newStatus = member.estado === 'aprobado' ? 'pendiente' : 'aprobado'
+    const isApproving = member.estado !== 'aprobado'
+    const newStatus = isApproving ? 'aprobado' : 'pendiente'
     const { error } = await supabase.from('miembros').update({ estado: newStatus }).eq('id', member.id)
     if (error) {
       alert('Error al actualizar estado: ' + error.message)
     } else {
+      
+      if (isApproving) {
+        try {
+          await fetch('/api/sendEmail', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: member.email, name: member.nombre_completo, status: 'aprobado' })
+          })
+          alert('Usuario aprobado y correo de notificación despachado (o simulado, revisa la consola del server si usas el modo local sin API).')
+        } catch (e) {
+          console.error('Error enviando correo', e)
+          alert('Estado aprobado, pero falló el envío del correo automático.')
+        }
+      }
+      
       fetchMembers()
     }
   }
@@ -98,7 +114,9 @@ export default function MemberList() {
                   <td className="px-4 py-4 font-bold">
                     <div className="flex flex-col">
                       <span>{member.nombre_completo}</span>
-                      <span className="font-mono text-[10px] uppercase text-primary-container/50 mt-1 truncate max-w-[150px]" title={member.id}>ID: {member.id.substring(0,8)}</span>
+                      <span className="font-mono text-[10px] text-primary-container/70 mt-1">
+                        RUT: {member.rut || 'N/A'}
+                      </span>
                     </div>
                   </td>
                   <td className="px-4 py-4">

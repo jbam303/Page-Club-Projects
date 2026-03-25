@@ -6,6 +6,7 @@ import LayoutFooter from '../components/LayoutFooter'
 
 function RegistroPage() {
   const [fullName, setFullName] = useState('')
+  const [rut, setRut] = useState('')
   const [email, setEmail] = useState('')
   const [bio, setBio] = useState('')
   const [interests, setInterests] = useState(['Backend'])
@@ -13,6 +14,12 @@ function RegistroPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
+
+  // Basic RUT cleaner/formatter (12345678-9) or simple regex validation could go here
+  const handleRutChange = (e) => {
+    let value = e.target.value.replace(/[^0-9kK-]/g, '');
+    setRut(value);
+  }
 
   const handleInterestChange = (interest) => {
     if (interests.includes(interest)) {
@@ -29,24 +36,36 @@ function RegistroPage() {
     setSuccess(false)
 
     try {
+      if (!rut.includes('-')) {
+        setError('El RUT debe incluir el guión (ej: 12345678-9).')
+        setLoading(false)
+        return
+      }
+
       const { error: insertError } = await supabase.from('miembros').insert([{
         nombre_completo: fullName,
+        rut: rut,
         email: email,
         bio: bio,
         intereses: interests
       }])
 
       if (insertError) {
-        setError('Acceso denegado: ' + insertError.message)
+        if (insertError.code === '23505') {
+          setError('Solicitud rechazada: Ya existe una solicitud pendiente o aprobada con este mismo RUT o Correo Institucional.')
+        } else {
+          setError('Error del sistema: ' + insertError.message)
+        }
       } else {
         setSuccess(true)
         setFullName('')
+        setRut('')
         setEmail('')
         setBio('')
         setInterests(['Backend'])
       }
     } catch (err) {
-      setError('Error interno del sistema.')
+      setError('Error interno de la matriz.')
     } finally {
       setLoading(false)
     }
@@ -79,12 +98,17 @@ function RegistroPage() {
           
           {success && (
             <div className="rounded border border-[#00FF9D]/50 bg-[#00FF9D]/10 p-4 text-sm text-[#00FF9D]">
-              ¡Registro completado! Bienvenido al Club. Tus credenciales han sido añadidas a la matriz.
+              ¡Solicitud de ingreso enviada! El administrador revisará tus datos. Recibirás un correo cuando seas aceptado.
             </div>
           )}
           <div className="group space-y-3">
             <label className="block font-body text-[10px] uppercase tracking-[0.3em] text-[#00FF9D]/60 transition-colors group-focus-within:text-[#00FF9D]">system.input(full_name)</label>
             <input required value={fullName} onChange={(e) => setFullName(e.target.value)} className="terminal-glow w-full rounded-none border-b border-outline-variant/30 bg-transparent p-4 text-lg text-on-surface placeholder:text-on-surface-variant/20 outline-none transition-all duration-500 focus:border-[#00FF9D] focus:ring-0" placeholder="John Doe" type="text" />
+          </div>
+
+          <div className="group space-y-3">
+            <label className="block font-body text-[10px] uppercase tracking-[0.3em] text-[#00FF9D]/60 transition-colors group-focus-within:text-[#00FF9D]">system.input(rut)</label>
+            <input required value={rut} onChange={handleRutChange} className="terminal-glow w-full rounded-none border-b border-outline-variant/30 bg-transparent p-4 text-lg text-on-surface placeholder:text-on-surface-variant/20 outline-none transition-all duration-500 focus:border-[#00FF9D] focus:ring-0" placeholder="12345678-9" type="text" />
           </div>
 
           <div className="group space-y-3">
@@ -110,7 +134,7 @@ function RegistroPage() {
 
           <div className="pt-12">
             <button disabled={loading} className="group relative w-full max-w-sm overflow-hidden bg-gradient-to-r from-[#56ffa8] to-[#00e475] py-6 text-xs font-bold uppercase tracking-[0.3em] text-[#002110] shadow-[0_20px_40px_-10px_rgba(0,255,157,0.3)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_25px_50px_-12px_rgba(0,255,157,0.4)] active:scale-[0.98] disabled:opacity-50" type="submit">
-              <span className="relative z-10">{loading ? 'Procesando...' : 'Enviar Registro'}</span>
+              <span className="relative z-10">{loading ? 'Procesando...' : 'Enviar Solicitud'}</span>
               <div className="absolute inset-0 translate-y-full bg-white/20 transition-transform duration-300 group-hover:translate-y-0" />
             </button>
             <div className="mt-8 flex items-center gap-3">
