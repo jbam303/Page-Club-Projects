@@ -51,6 +51,19 @@ function LandingPage() {
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDateStr}/${endDateStr}&details=${desc}&location=${loc}`
   }
 
+  const getRecurringCalendarUrl = (sch) => {
+    // sch.dia = "Lunes", "Martes", etc.
+    const dayMap = { "Lunes": "MO", "Martes": "TU", "Miércoles": "WE", "Jueves": "TH", "Viernes": "FR", "Sábado": "SA", "Domingo": "SU" }
+    const rruleDay = dayMap[sch.dia] || "MO"
+    
+    // We create a dummy start date for "next occurring day" to make the template happy
+    const title = encodeURIComponent(`Club DPT: Encuentro de ${sch.dia}`)
+    const details = encodeURIComponent(`Horario: ${sch.horas}`)
+    const location = encodeURIComponent(sch.lugar || '')
+    
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&recur=RRULE:FREQ=WEEKLY;BYDAY=${rruleDay}`
+  }
+
   return (
     <div className="scrollbar-codeclub bg-surface text-on-surface font-body">
       <LayoutHeader />
@@ -99,9 +112,20 @@ function LandingPage() {
             <div className="flex flex-col gap-3 border-l border-outline-variant/20 pl-6">
               {schedules.length > 0 ? (
                 schedules.map((sch) => (
-                  <div key={sch.id} className="font-mono text-xs">
-                    <span className="text-primary-fixed block mb-1">{sch.dia}: {sch.horas}</span>
-                    <span className="text-on-surface-variant/70 text-[10px]">📍 {sch.lugar}</span>
+                  <div key={sch.id} className="font-mono text-xs flex items-center justify-between gap-4">
+                    <div>
+                      <span className="text-primary-fixed block mb-1">{sch.dia}: {sch.horas}</span>
+                      <span className="text-on-surface-variant/70 text-[10px]">📍 {sch.lugar}</span>
+                    </div>
+                    <a
+                      href={getRecurringCalendarUrl(sch)}
+                      target="_blank"
+                      rel="noreferrer"
+                      title="Agendar este día"
+                      className="text-primary-container/50 hover:text-primary-container transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-lg">edit_calendar</span>
+                    </a>
                   </div>
                 ))
               ) : (
