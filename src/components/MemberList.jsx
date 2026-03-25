@@ -59,12 +59,13 @@ export default function MemberList() {
           })
 
           if (!res.ok) {
-            throw new Error('No autorizado o falló el envío')
+            const errData = await res.json()
+            throw new Error(errData.error || 'No autorizado o falló el envío')
           }
-          alert('Usuario aprobado y correo de notificación despachado (o simulado, revisa la consola del server si usas el modo local sin API).')
+          alert('Usuario aprobado y correo de notificación despachado exitosamente.')
         } catch (e) {
-          console.error('Error enviando correo', e)
-          alert('Estado aprobado, pero falló el envío del correo automático.')
+          console.error('Error enviando correo:', e)
+          alert('El usuario fue aprobado, pero falló el envío del correo automático:\n\n' + e.message + '\n\n*Nota: Si estás usando la capa gratuita de Resend sin un dominio verificado, solo puedes enviarte correos a la misma dirección con la que te registraste en Resend.*')
         }
       }
       
