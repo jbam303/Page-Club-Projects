@@ -31,6 +31,26 @@ function LandingPage() {
     fetchActivities()
     fetchSchedules()
   }, [])
+
+  const getCalendarUrl = (activity) => {
+    if (!activity.fecha_evento) return "#"
+    const start = new Date(activity.fecha_evento)
+    const end = new Date(start.getTime() + 60 * 60 * 1000) // Default +1 hour
+
+    const formatGoogleDate = (d) => {
+      return d.toISOString().replace(/-|:|\.\d\d\d/g, "")
+    }
+
+    const startDateStr = formatGoogleDate(start)
+    const endDateStr = formatGoogleDate(end)
+    
+    const title = encodeURIComponent(activity.titulo || '')
+    const desc = encodeURIComponent(activity.descripcion || '')
+    const loc = encodeURIComponent(activity.lugar || '')
+
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDateStr}/${endDateStr}&details=${desc}&location=${loc}`
+  }
+
   return (
     <div className="scrollbar-codeclub bg-surface text-on-surface font-body">
       <LayoutHeader />
@@ -151,6 +171,21 @@ function LandingPage() {
                           <p className={`text-sm font-light text-on-surface-variant ${isCompleted ? 'line-through opacity-60' : ''}`}>
                             {act.descripcion}
                           </p>
+                          
+                          {/* Calendar Button */}
+                          {!isCompleted && act.fecha_evento && (
+                            <div className="mt-4 flex">
+                              <a
+                                href={getCalendarUrl(act)}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-2 rounded bg-surface-container-high border border-outline-variant/20 px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-[#00FF9D] transition-all hover:bg-[#00FF9D]/10 hover:border-[#00FF9D]/50"
+                              >
+                                <span className="material-symbols-outlined text-[14px]">calendar_add_on</span>
+                                Agendar
+                              </a>
+                            </div>
+                          )}
                         </div>
                       </div>
                     )
