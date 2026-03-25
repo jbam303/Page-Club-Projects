@@ -46,11 +46,21 @@ export default function MemberList() {
       
       if (isApproving) {
         try {
-          await fetch('/api/sendEmail', {
+          const { data: { session } } = await supabase.auth.getSession()
+          const token = session?.access_token || ''
+
+          const res = await fetch('/api/sendEmail', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({ email: member.email, name: member.nombre_completo, status: 'aprobado' })
           })
+
+          if (!res.ok) {
+            throw new Error('No autorizado o falló el envío')
+          }
           alert('Usuario aprobado y correo de notificación despachado (o simulado, revisa la consola del server si usas el modo local sin API).')
         } catch (e) {
           console.error('Error enviando correo', e)

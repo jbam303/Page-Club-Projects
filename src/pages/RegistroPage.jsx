@@ -15,6 +15,15 @@ function RegistroPage() {
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
 
+  const sanitizeInput = (str) => {
+    if (!str) return ''
+    const cleanStr = str.replace(/[<>]/g, '')
+    if (['=', '+', '-', '@'].includes(cleanStr.charAt(0))) {
+      return `'${cleanStr}`
+    }
+    return cleanStr
+  }
+
   // Basic RUT cleaner/formatter (12345678-9) or simple regex validation could go here
   const handleRutChange = (e) => {
     let value = e.target.value.replace(/[^0-9kK-]/g, '');
@@ -36,6 +45,13 @@ function RegistroPage() {
     setSuccess(false)
 
     try {
+      const lastSubmit = localStorage.getItem('codeclub_last_submit')
+      if (lastSubmit && (Date.now() - parseInt(lastSubmit) < 60000)) {
+        setError('Demasiadas solicitudes. Por favor, espera un minuto antes de enviar otra.')
+        setLoading(false)
+        return
+      }
+
       if (!rut.includes('-')) {
         setError('El RUT debe incluir el guión (ej: 12345678-9).')
         setLoading(false)
@@ -43,10 +59,10 @@ function RegistroPage() {
       }
 
       const { error: insertError } = await supabase.from('miembros').insert([{
-        nombre_completo: fullName,
+        nombre_completo: sanitizeInput(fullName),
         rut: rut,
         email: email,
-        bio: bio,
+        bio: sanitizeInput(bio),
         intereses: interests
       }])
 
@@ -57,6 +73,7 @@ function RegistroPage() {
           setError('Error del sistema: ' + insertError.message)
         }
       } else {
+        localStorage.setItem('codeclub_last_submit', Date.now().toString())
         setSuccess(true)
         setFullName('')
         setRut('')

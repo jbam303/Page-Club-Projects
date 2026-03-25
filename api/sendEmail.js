@@ -1,7 +1,41 @@
+import { createClient } from '@supabase/supabase-js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' })
   }
+
+  // 1. Extraer el token de autorización enviado desde MemberList.jsx
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ error: 'Unauthorized: No token provided' });
+  }
+  const token = authHeader.replace('Bearer ', '');
+
+  // 2. Autenticar usando Supabase 
+  const supabaseUrl = process.env.VITE_SUPABASE_URL;
+  // Usar ANON_KEY para verificar token (o SERVICE_ROLE, pero ANON + getUser es más seguro para validar tokens de cliente)
+  const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
+  const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+  if (authError || !user) {
+    return res.status(401).json({ error: 'Unauthorized: Invalid credentials' });
+  }
+
+  // 3. Verificar si el UID pertenece a un administrador
+  const { data: adminRole, error: roleError } = await supabase
+    .from('admin_roles')
+    .select('id')
+    .eq('id', user.id)
+    .single();
+
+  if (roleError || !adminRole) {
+    return res.status(403).json({ error: 'Forbidden: Admin access required to dispatch emails' });
+  }
+
+  // --- FIN DE VALIDACIÓN DE SEGURIDAD --- //
 
   const { email, name, status } = req.body
 
@@ -9,7 +43,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Faltan datos (email, name)' })
   }
 
-  // To use this in production on Vercel, the user must add RESEND_API_KEY environment variable.
   const resendApiKey = process.env.RESEND_API_KEY
 
   if (!resendApiKey) {
