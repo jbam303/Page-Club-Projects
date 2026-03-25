@@ -16,17 +16,20 @@ export default function ScheduleManager() {
 
   const fetchSchedules = async () => {
     setLoading(true)
-    const { data, error } = await supabase
-      .from('horarios_club')
-      .select('*')
-      .order('dia', { ascending: true })
-      
-    if (error) {
-      setError('Error al cargar horarios.')
-    } else {
-      setSchedules(data || [])
-    }
-    setLoading(false)
+      const { data, error } = await supabase
+        .from('horarios_club')
+        .select('*')
+        
+      if (error) {
+        setError('Error al cargar horarios.')
+      } else {
+        const sortedData = (data || []).sort((a, b) => {
+          const days = { "Lunes": 1, "Martes": 2, "Miércoles": 3, "Jueves": 4, "Viernes": 5, "Sábado": 6, "Domingo": 7 }
+          return (days[a.dia] || 99) - (days[b.dia] || 99)
+        })
+        setSchedules(sortedData)
+      }
+      setLoading(false)
   }
 
   useEffect(() => {

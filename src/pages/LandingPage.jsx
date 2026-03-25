@@ -20,8 +20,13 @@ function LandingPage() {
       const { data } = await supabase
         .from('horarios_club')
         .select('*')
-        .order('dia', { ascending: true })
-      if (data) setSchedules(data)
+      if (data) {
+        const sortedData = data.sort((a, b) => {
+          const days = { "Lunes": 1, "Martes": 2, "Miércoles": 3, "Jueves": 4, "Viernes": 5, "Sábado": 6, "Domingo": 7 }
+          return (days[a.dia] || 99) - (days[b.dia] || 99)
+        })
+        setSchedules(sortedData)
+      }
     }
     fetchActivities()
     fetchSchedules()
