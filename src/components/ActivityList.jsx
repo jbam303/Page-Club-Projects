@@ -7,10 +7,10 @@ export default function ActivityList() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   
-  // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingActivity, setEditingActivity] = useState(null)
   const [deletingActivity, setDeletingActivity] = useState(null)
+  const [sendingReminderId, setSendingReminderId] = useState(null)
 
   const fetchActivities = async () => {
     setLoading(true)
@@ -55,6 +55,35 @@ export default function ActivityList() {
       alert('Error al actualizar estado: ' + error.message)
     } else {
       fetchActivities()
+    }
+  }
+
+  const handleSendReminder = async (act) => {
+    if (!window.confirm(`¿Seguro que quieres enviar un correo ahora a todos los miembros sobre "${act.titulo}"?`)) return
+    
+    setSendingReminderId(act.id)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) throw new Error('No estás autenticado')
+
+      const response = await fetch('/api/sendReminder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({ activityId: act.id })
+      })
+
+      const result = await response.json()
+      if (!response.ok) throw new Error(result.error || 'Error enviando aviso')
+      
+      alert('✅ ' + result.message)
+      fetchActivities()
+    } catch (err) {
+      alert('❌ Error: ' + err.message)
+    } finally {
+      setSendingReminderId(null)
     }
   }
 
@@ -180,6 +209,21 @@ export default function ActivityList() {
                       >
                         <span className="material-symbols-outlined text-lg">calendar_add_on</span>
                       </a>
+                    )}
+                    {act.estado !== 'Completado' && !act.reminder_sent && (
+                      <button
+                        onClick={() => handleSendReminder(act)}
+                        disabled={sendingReminderId === act.id}
+                        className="mr-3 text-[#FFBD2E] hover:text-[#ffd666] disabled:opacity-50"
+                        title="Enviar correo de aviso"
+                      >
+                        <span className="material-symbols-outlined text-lg">campaign</span>
+                      </button>
+                    )}
+                    {act.reminder_sent && (
+                      <span className="mr-3 text-on-surface-variant/40 cursor-not-allowed" title="Aviso ya enviado">
+                        <span className="material-symbols-outlined text-lg">campaign</span>
+                      </span>
                     )}
                     <button
                       onClick={() => handleToggleStatus(act)}
