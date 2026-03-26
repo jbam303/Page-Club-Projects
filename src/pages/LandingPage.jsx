@@ -7,6 +7,7 @@ import LayoutFooter from '../components/LayoutFooter'
 function LandingPage() {
   const [activities, setActivities] = useState([])
   const [schedules, setSchedules] = useState([])
+  const [proyectos, setProyectos] = useState([])
 
   useEffect(() => {
     const fetchActivities = async () => {
@@ -30,6 +31,11 @@ function LandingPage() {
     }
     fetchActivities()
     fetchSchedules()
+    const fetchProyectos = async () => {
+      const { data } = await supabase.from('proyectos').select('*').order('created_at', { ascending: false })
+      if (data) setProyectos(data)
+    }
+    fetchProyectos()
   }, [])
 
   const getCalendarUrl = (activity) => {
@@ -361,6 +367,74 @@ function LandingPage() {
             </div>
           </div>
         </section>
+
+        {/* PROYECTOS DESTACADOS */}
+        {proyectos.length > 0 && (
+          <section className="bg-surface-container-lowest px-6 py-24">
+            <div className="mx-auto max-w-7xl">
+              <div className="mb-16 flex flex-col items-end justify-between gap-8 md:flex-row">
+                <div>
+                  <span className="font-label text-xs uppercase tracking-[0.4em] text-primary-container">
+                    Portafolio
+                  </span>
+                  <h2 className="mt-4 font-headline text-5xl font-bold md:text-7xl">
+                    Proyectos Destacados
+                  </h2>
+                </div>
+                <div className="text-right font-mono text-xs uppercase tracking-widest text-primary-container/40">
+                  [ {proyectos.length} PROYECTO{proyectos.length !== 1 ? 'S' : ''} ]
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {proyectos.map((p) => (
+                  <div key={p.id} className="group overflow-hidden rounded-xl border border-outline-variant/10 bg-surface-container transition-all duration-300 hover:border-primary-container/30 hover:shadow-[0_0_30px_rgba(0,255,157,0.08)]">
+                    {p.imagen_url ? (
+                      <div className="h-48 w-full overflow-hidden">
+                        <img src={p.imagen_url} alt={p.titulo} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                      </div>
+                    ) : (
+                      <div className="flex h-48 w-full items-center justify-center bg-surface-container-high">
+                        <span className="material-symbols-outlined text-6xl text-outline-variant/20">code_blocks</span>
+                      </div>
+                    )}
+                    <div className="p-6">
+                      <h3 className="mb-2 font-headline text-xl font-bold text-on-surface">{p.titulo}</h3>
+                      <p className="mb-4 text-sm font-light leading-relaxed text-on-surface-variant line-clamp-3">{p.descripcion}</p>
+
+                      {p.tecnologias && p.tecnologias.length > 0 && (
+                        <div className="mb-5 flex flex-wrap gap-1.5">
+                          {p.tecnologias.map(t => (
+                            <span key={t} className="rounded-full border border-primary-container/20 bg-primary-container/5 px-2.5 py-0.5 font-mono text-[10px] text-primary-container">
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-3 border-t border-outline-variant/10 pt-4">
+                        {p.repo_url && (
+                          <a href={p.repo_url} target="_blank" rel="noreferrer"
+                            className="flex items-center gap-1.5 rounded-lg border border-outline-variant/20 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-on-surface-variant transition-all hover:border-primary-container/40 hover:text-primary-container">
+                            <span className="material-symbols-outlined text-sm">code</span>
+                            Código
+                          </a>
+                        )}
+                        {p.demo_url && (
+                          <a href={p.demo_url} target="_blank" rel="noreferrer"
+                            className="flex items-center gap-1.5 rounded-lg bg-primary-container/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-primary-container transition-all hover:bg-primary-container/20">
+                            <span className="material-symbols-outlined text-sm">rocket_launch</span>
+                            Demo en Vivo
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         <section className="mx-auto max-w-7xl px-6 py-32 text-center">
           <h2 className="mb-16 font-headline text-4xl font-bold italic md:text-5xl">
