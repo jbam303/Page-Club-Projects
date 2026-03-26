@@ -6,6 +6,19 @@ export default function MemberList() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [deletingMember, setDeletingMember] = useState(null)
+  
+  // UX States
+  const [searchTerm, setSearchTerm] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [notification, setNotification] = useState({ show: false, message: '', type: 'success' })
+  const ITEMS_PER_PAGE = 5
+
+  const showNotification = (msg, type = 'success') => {
+    setNotification({ show: true, message: msg, type })
+    setTimeout(() => {
+      setNotification(n => ({ ...n, show: false }))
+    }, 5000)
+  }
 
   const fetchMembers = async () => {
     setLoading(true)
@@ -31,8 +44,9 @@ export default function MemberList() {
     
     const { error } = await supabase.from('miembros').delete().eq('id', deletingMember.id)
     if (error) {
-      alert('Error al eliminar: ' + error.message)
+      showNotification('Error al eliminar: ' + error.message, 'error')
     } else {
+      showNotification('Miembro eliminado del registro correctamente.', 'success')
       fetchMembers()
     }
     setDeletingMember(null)
@@ -47,10 +61,11 @@ export default function MemberList() {
     const newStatus = isApproving ? 'aprobado' : 'pendiente'
     const { error } = await supabase.from('miembros').update({ estado: newStatus }).eq('id', member.id)
     if (error) {
-      alert('Error al actualizar estado: ' + error.message)
+      showNotification('Error al actualizar estado: ' + error.message, 'error')
     } else {
       
       if (isApproving) {
+        showNotification('Procesando envío de correo...', 'success')
         try {
           const { data: { session } } = await supabase.auth.getSession()
           const token = session?.access_token || ''
@@ -68,16 +83,36 @@ export default function MemberList() {
             const errData = await res.json()
             throw new Error(errData.error || 'No autorizado o falló el envío')
           }
-          alert('Usuario aprobado y correo de notificación despachado exitosamente.')
+          showNotification('Usuario aprobado y correo de notificación despachado exitosamente al postulante.', 'success')
         } catch (e) {
           console.error('Error enviando correo:', e)
-          alert('El usuario fue aprobado, pero falló el envío del correo automático:\n\n' + e.message + '\n\n*Nota: Si estás usando la capa gratuita de Resend sin un dominio verificado, solo puedes enviarte correos a la misma dirección con la que te registraste en Resend.*')
+          showNotification('Aprobado con Error: falló el envío del correo automático. (Posible límite de Resend)', 'error')
         }
+      } else {
+        showNotification('El estado del miembro ha sido revertido a Pendiente.', 'success')
       }
       
       fetchMembers()
     }
   }
+
+  // Derive data logic
+  const filteredMembers = members.filter(m => {
+    const searchLow = searchTerm.toLowerCase()
+    return (
+      (m.nombre_completo || '').toLowerCase().includes(searchLow) ||
+      (m.email || '').toLowerCase().includes(searchLow) ||
+      (m.rut || '').toLowerCase().includes(searchLow)
+    )
+  })
+
+  const totalPages = Math.ceil(filteredMembers.length / ITEMS_PER_PAGE) || 1
+  const displayedMembers = filteredMembers.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
+
+  // Reset to page 1 if search changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm])
 
   return (
     <div className="glass-card mb-12 rounded-lg p-6 relative z-10">
@@ -98,6 +133,21 @@ export default function MemberList() {
         </button>
       </div>
 
+      <div className="mb-6 flex w-full flex-col sm:flex-row gap-4">
+        <div className="relative flex-1">
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50">
+            search
+          </span>
+          <input
+            type="text"
+            placeholder="Buscar postulantes por Nombre, Correo o RUT..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="terminal-glow w-full rounded border border-outline-variant/30 bg-surface py-3 pl-10 pr-4 text-sm text-on-surface transition-all placeholder:text-on-surface-variant/40 focus:outline-none"
+          />
+        </div>
+      </div>
+
       {error && (
         <div className="mb-4 rounded border border-error/50 bg-error-container/20 p-3 text-sm text-error">
           {error}
@@ -108,15 +158,15 @@ export default function MemberList() {
         <div className="py-8 text-center font-mono text-sm text-on-surface-variant">
           Cargando registros...
         </div>
-      ) : members.length === 0 ? (
+      ) : filteredMembers.length === 0 ? (
         <div className="py-8 text-center font-mono text-sm text-on-surface-variant">
-          No hay miembros registrados aún.
+          No hay miembros que coincidan con la búsqueda.
         </div>
       ) : (
         <>
           {/* Vista móvil (Tarjetas) */}
           <div className="grid grid-cols-1 gap-4 md:hidden">
-            {members.map((member) => (
+            {displayedMembers.map((member) => (
               <div key={member.id} className="rounded-lg border border-outline-variant/20 bg-surface-container-low p-4 flex flex-col gap-3">
                 <div className="flex justify-between items-start">
                   <div>
@@ -186,7 +236,7 @@ export default function MemberList() {
                 </tr>
               </thead>
               <tbody>
-                {members.map((member) => (
+                {displayedMembers.map((member) => (
                   <tr key={member.id} className="border-b border-outline-variant/10 transition-colors hover:bg-surface-container-low">
                     <td className="px-4 py-4 font-bold align-top">
                       <div className="flex flex-col">
@@ -242,6 +292,31 @@ export default function MemberList() {
               </tbody>
             </table>
           </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row border-t border-outline-variant/20 pt-4">
+              <span className="font-mono text-xs uppercase text-on-surface-variant">
+                Página <strong className="text-on-surface">{currentPage}</strong> de <strong className="text-on-surface">{totalPages}</strong> ({filteredMembers.length} resultados)
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  className="rounded border border-outline-variant/30 bg-surface-container px-3 py-1 font-mono text-xs uppercase text-on-surface disabled:opacity-30 transition-all hover:bg-surface-container-high"
+                >
+                  Anterior
+                </button>
+                <button
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  className="rounded border border-outline-variant/30 bg-surface-container px-3 py-1 font-mono text-xs uppercase text-on-surface disabled:opacity-30 transition-all hover:bg-surface-container-high"
+                >
+                  Siguiente
+                </button>
+              </div>
+            </div>
+          )}
         </>
       )}
 
@@ -277,6 +352,35 @@ export default function MemberList() {
           </div>
         </div>
       )}
+
+      {/* Modern Aesthetic Notification Toast (Modal) */}
+      <div 
+        className={`fixed bottom-6 right-6 z-[200] flex max-w-sm items-center gap-3 rounded-lg border px-5 py-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          notification.show ? 'translate-x-0 opacity-100' : 'translate-x-[120%] opacity-0'
+        } ${
+          notification.type === 'error' 
+            ? 'border-error/30 bg-error-container/95 text-error backdrop-blur-md' 
+            : 'border-primary-container/30 bg-surface-container-high/95 text-primary-container backdrop-blur-md'
+        }`}
+      >
+        <span className="material-symbols-outlined text-2xl">
+          {notification.type === 'error' ? 'error' : 'task_alt'}
+        </span>
+        <div className="flex flex-col">
+          <strong className="font-headline text-sm uppercase tracking-widest text-on-surface">
+            {notification.type === 'error' ? 'Error' : 'Notificación'}
+          </strong>
+          <span className="font-body text-xs mt-0.5 text-on-surface-variant leading-relaxed">
+            {notification.message}
+          </span>
+        </div>
+        <button 
+          onClick={() => setNotification(n => ({ ...n, show: false }))}
+          className="absolute right-2 top-2 rounded p-1 hover:bg-white/10 text-on-surface-variant transition-colors"
+        >
+          <span className="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
     </div>
   )
 }
