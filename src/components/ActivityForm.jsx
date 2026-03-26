@@ -103,6 +103,19 @@ export default function ActivityForm({ initialData = null, onClose }) {
 
           <div>
             <label className="mb-1 block text-xs uppercase tracking-wider text-on-surface-variant">
+              Lugar / Enlace (Opcional)
+            </label>
+            <input
+              type="text"
+              value={lugar}
+              onChange={(e) => setLugar(e.target.value)}
+              className="terminal-glow w-full rounded border border-outline-variant/30 bg-surface px-3 py-2 text-on-surface transition-all placeholder:text-on-surface-variant/30 focus:outline-none"
+              placeholder="Ej: Fablab o Sala 303..."
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-xs uppercase tracking-wider text-on-surface-variant">
               Estado
             </label>
             <select
