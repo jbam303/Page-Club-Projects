@@ -73,7 +73,7 @@ export default function ProjectUpload() {
       const filePath = `proyectos/${fileName}`
 
       const { error: uploadError } = await supabase.storage
-        .from('proyectos')
+        .from('projects')
         .upload(filePath, imageFile, { cacheControl: '3600', upsert: false })
 
       if (uploadError) {
@@ -82,7 +82,7 @@ export default function ProjectUpload() {
         return
       }
 
-      const { data: urlData } = supabase.storage.from('proyectos').getPublicUrl(filePath)
+      const { data: urlData } = supabase.storage.from('projects').getPublicUrl(filePath)
       imagen_url = urlData.publicUrl
     }
 
