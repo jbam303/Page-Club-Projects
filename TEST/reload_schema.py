@@ -2,9 +2,8 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 
-def force_fechafin():
+def reload_schema():
     load_dotenv(dotenv_path='../.env')
-    
     host = os.getenv("SUPABASE_URL", "").strip()
     port = os.getenv("SUPABASE_PORT", "6543").strip()
     user = os.getenv("SUPABASE_USER", "").strip()
@@ -12,29 +11,18 @@ def force_fechafin():
     dbname = os.getenv("SUPABASE_DATABASE", "postgres").strip()
     
     db_url = f"postgresql://{user}:{password}@{host}:{port}/{dbname}?sslmode=require"
-    print(f"Connecting to {host}:{port}...")
     
     try:
         conn = psycopg2.connect(db_url)
+        conn.autocommit = True
         cursor = conn.cursor()
-        
-        print("Adding fecha_fin column to activities...")
-        cursor.execute("ALTER TABLE public.activities ADD COLUMN IF NOT EXISTS fecha_fin TIMESTAMP WITH TIME ZONE;")
-        conn.commit() # FORCE COMMIT
-        
-        # Verify
-        cursor.execute("SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'activities';")
-        cols = [r[0] for r in cursor.fetchall()]
-        print(f"Columns after alter: {cols}")
-        
-        # REFRESH POSTGREST
+        print("Reloading Supabase schema cache...")
         cursor.execute("NOTIFY pgrst, 'reload schema';")
-        conn.commit()
-        
+        print("✅ Cache reloaded successfully!")
         cursor.close()
         conn.close()
     except Exception as e:
-        print(f"Error updating database: {e}")
+        print(f"Error checking DB: {e}")
 
 if __name__ == "__main__":
-    force_fechafin()
+    reload_schema()

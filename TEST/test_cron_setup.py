@@ -1,8 +1,9 @@
 import os
 import psycopg2
 from dotenv import load_dotenv
+from datetime import datetime, timedelta
 
-def force_fechafin():
+def setup_mock_activity():
     load_dotenv(dotenv_path='../.env')
     
     host = os.getenv("SUPABASE_URL", "").strip()
@@ -12,24 +13,23 @@ def force_fechafin():
     dbname = os.getenv("SUPABASE_DATABASE", "postgres").strip()
     
     db_url = f"postgresql://{user}:{password}@{host}:{port}/{dbname}?sslmode=require"
-    print(f"Connecting to {host}:{port}...")
     
     try:
         conn = psycopg2.connect(db_url)
+        conn.autocommit = True
         cursor = conn.cursor()
         
-        print("Adding fecha_fin column to activities...")
-        cursor.execute("ALTER TABLE public.activities ADD COLUMN IF NOT EXISTS fecha_fin TIMESTAMP WITH TIME ZONE;")
-        conn.commit() # FORCE COMMIT
+        # 30 minutes from now
+        future_date = datetime.utcnow() + timedelta(minutes=30)
         
-        # Verify
-        cursor.execute("SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'activities';")
-        cols = [r[0] for r in cursor.fetchall()]
-        print(f"Columns after alter: {cols}")
+        cursor.execute("""
+            INSERT INTO public.activities (titulo, descripcion, lugar, estado, fecha_evento, reminder_sent)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            RETURNING id;
+        """, ("⚠️ Test CRON Automation", "Prueba generada automáticamente", "Discord Virtual", "Pendiente", future_date, False))
         
-        # REFRESH POSTGREST
-        cursor.execute("NOTIFY pgrst, 'reload schema';")
-        conn.commit()
+        new_id = cursor.fetchone()[0]
+        print(f"✅ Created mock activity ID: {new_id} scheduled for {future_date.isoformat()}")
         
         cursor.close()
         conn.close()
@@ -37,4 +37,4 @@ def force_fechafin():
         print(f"Error updating database: {e}")
 
 if __name__ == "__main__":
-    force_fechafin()
+    setup_mock_activity()

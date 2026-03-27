@@ -132,8 +132,8 @@ function RegistroPage() {
           </div>
 
           <div className="group space-y-3">
-            <label className="block font-body text-[10px] uppercase tracking-[0.3em] text-[#00FF9D]/60 transition-colors group-focus-within:text-[#00FF9D]">system.input(institutional_email)</label>
-            <input required value={email} onChange={(e) => setEmail(e.target.value)} className="terminal-glow w-full rounded-none border-b border-outline-variant/30 bg-transparent p-4 text-lg text-on-surface placeholder:text-on-surface-variant/20 outline-none transition-all duration-500 focus:border-[#00FF9D] focus:ring-0" placeholder="dev@university.edu" type="email" />
+            <label className="block font-body text-[10px] uppercase tracking-[0.3em] text-[#00FF9D]/60 transition-colors group-focus-within:text-[#00FF9D]">system.input(email)</label>
+            <input required value={email} onChange={(e) => setEmail(e.target.value)} className="terminal-glow w-full rounded-none border-b border-outline-variant/30 bg-transparent p-4 text-lg text-on-surface placeholder:text-on-surface-variant/20 outline-none transition-all duration-500 focus:border-[#00FF9D] focus:ring-0" placeholder="dev@gmail.com" type="email" />
           </div>
 
           <div className="group space-y-3">
