@@ -4,6 +4,28 @@ import { supabase } from '../lib/supabase'
 import LayoutHeader from '../components/LayoutHeader'
 import LayoutFooter from '../components/LayoutFooter'
 
+const validateRut = (rut) => {
+  if (typeof rut !== 'string') return false
+  const cleanRut = rut.replace(/[^0-9kK]/g, '').toUpperCase()
+  if (cleanRut.length < 2) return false
+  
+  const body = cleanRut.slice(0, -1)
+  const dv = cleanRut.slice(-1)
+  if (!/^[0-9]+$/.test(body)) return false
+  
+  let sum = 0
+  let multiplier = 2
+  for (let i = body.length - 1; i >= 0; i--) {
+    sum += parseInt(body[i]) * multiplier
+    multiplier = multiplier === 7 ? 2 : multiplier + 1
+  }
+  
+  const expectedDv = 11 - (sum % 11)
+  const calculatedDv = expectedDv === 11 ? '0' : expectedDv === 10 ? 'K' : expectedDv.toString()
+  
+  return dv === calculatedDv
+}
+
 function RegistroPage() {
   const [fullName, setFullName] = useState('')
   const [rut, setRut] = useState('')
@@ -24,10 +46,20 @@ function RegistroPage() {
     return cleanStr
   }
 
-  // Basic RUT cleaner/formatter (12345678-9) or simple regex validation could go here
+  const formatRut = (value) => {
+    const cleanValue = value.replace(/[^0-9kK]/gi, '')
+    if (cleanValue.length === 0) return ''
+    if (cleanValue.length === 1) return cleanValue
+    
+    const body = cleanValue.slice(0, -1)
+    const dv = cleanValue.slice(-1).toUpperCase()
+    
+    const formattedBody = body.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+    return `${formattedBody}-${dv}`
+  }
+
   const handleRutChange = (e) => {
-    let value = e.target.value.replace(/[^0-9kK-]/g, '');
-    setRut(value);
+    setRut(formatRut(e.target.value))
   }
 
   const handleInterestChange = (interest) => {
@@ -58,7 +90,13 @@ function RegistroPage() {
         return
       }
 
-      const normalizedRut = rut.toLowerCase().trim()
+      if (!validateRut(rut)) {
+        setError('El RUT ingresado no es válido.')
+        setLoading(false)
+        return
+      }
+
+      const normalizedRut = rut.replace(/\./g, '').toLowerCase().trim()
       const normalizedEmail = email.toLowerCase().trim()
 
       const { error: insertError } = await supabase.from('miembros').insert([{
