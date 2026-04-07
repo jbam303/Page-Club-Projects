@@ -9,6 +9,15 @@ function LayoutFooter() {
             Club de desarrollo de proyectos tecnologicos
           </div>
           <p className="font-mono text-[10px] uppercase leading-relaxed tracking-widest text-[#E5E2E1]/40">
+            © 2026 Desarrollado por{' '}
+            <a
+              href="https://artemisdev.me/"
+              className="text-[#00FF9D] hover:text-[#00FF9D]/80"
+            >
+              ArtemisDev
+            </a>
+          </p>
+          <p className="font-mono text-[10px] uppercase leading-relaxed tracking-widest text-[#E5E2E1]/40">
             © 2026 Club de desarrollo de proyectos tecnologicos. ALL RIGHTS
             RESERVED.
           </p>
